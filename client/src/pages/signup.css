@@ -1,0 +1,20 @@
+
+
+
+.signup-button {
+    position: absolute;
+    top: 20px; 
+    left: 20px; 
+    z-index: 1000; 
+  }
+  
+  .col-lg-10{
+    display: flex;
+    justify-content: center;
+  
+  }
+
+  .flex-row, .justify-center, .mb-4{
+    justify-content: center;
+    display: flex;
+  }
