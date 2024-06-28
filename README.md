@@ -41,6 +41,8 @@ Join us at Video Game Hub and unlock a world of limitless possibilities. Shape, 
 
 3. Build the project (from the root folder)
 
+`npm run build`
+
 4. Start the development server: 
 
 `npm run develop`
