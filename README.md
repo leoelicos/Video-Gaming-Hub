@@ -1,15 +1,3 @@
-
-# Video-Game-Hub
-
-Introducing Video Game Hub, the ultimate destination for gamers seeking a personalized and immersive gaming experience. At Video Game Hub, we offer more than just a platform – we provide a vibrant community where players can curate their gaming journey like never before.
-
-With features tailored to the modern gamer, Video Game Hub allows users to showcase their recently played games, craft wishlists, and share their latest pickups with fellow enthusiasts. But that's just the beginning. Our forum serves as a bustling hub for discussions on all things gaming, fostering connections and sparking conversations among players, friends, and creators alike.
-
-What sets Video Game Hub apart is its commitment to customization. Whether you're seeking new connections, following relevant players, or discovering like-minded friends, our platform empowers users to shape their gaming world according to their unique preferences and interests.
-
-Join us at Video Game Hub and unlock a world of limitless possibilities, where your gaming experience is truly yours to shape, share, and enjoy. Elevate your gaming journey with Video Game Hub – the ultimate destination for gamers by gamers.
-
-
 ## Table of Contents
 
 - [Installation](#installation)
@@ -17,21 +5,45 @@ Join us at Video Game Hub and unlock a world of limitless possibilities, where y
 - [Credits](#credits)
 - [License](#license)
 
-## Installation
+# Video Game Hub
 
+Welcome to Video Game Hub, the premier destination for gamers seeking a personalized and immersive gaming experience. Our platform goes beyond mere gameplay; it fosters a vibrant community where players can curate their gaming journey like never before.
+
+### Features
+
+Video Game Hub offers tailored features for the modern gamer:
+- Showcase recently played games
+- Craft wishlists
+- Share latest pickups with fellow enthusiasts
+
+But that's just the beginning. Our forum serves as a bustling hub for discussions on all aspects of gaming, connecting players, friends, and creators.
+
+### Customization
+
+What sets Video Game Hub apart is its dedication to customization. Whether you're forming new connections, following relevant players, or discovering like-minded friends, our platform empowers users to shape their gaming world according to their unique preferences and interests.
+
+### Join Us
+
+Join us at Video Game Hub and unlock a world of limitless possibilities. Shape, share, and enjoy your gaming journey with us – the ultimate destination for gamers, by gamers.
+
+---
+
+## Installation
 
 1. Clone the repository:
 
-   git clone https://github.com/your-username/your-project.git
+`git clone https://github.com/your-username/your-project.git`
+   `cd your-projec`
 
-   cd your-project
+2. Install Dependencies
 
-   locate your package.json in your client folder and copy/paste `    "vite": "^4.4.5",
-    "@vitejs/plugin-react": "^4.0.3"` feomm the dependancies into the devDependancies section DO NOT DELETE the copied section you need both.
+`npm install`
 
-   npm install
+3. Build the project (from the root folder)
 
-   npm run develop on your root folder
+4. Start the development server: 
+
+`npm run develop`
 
 ## Usage
 
@@ -39,12 +51,13 @@ Join us at Video Game Hub and unlock a world of limitless possibilities, where y
 
 - Open your browser and navigate to [http://localhost:3000](http://localhost:3000) to view the application.
 
-Or please just locate our website at https://video-game-hub.onrender.com/
+- Alternatively, visit our website at [Video Game Hub](https://video-gaming-hub.onrender.com/)<br>
+https://video-gaming-hub.onrender.com/
 
 ## Credits
-Brandon Kelly - https://github.com/bkness \
-Dylan Horyza - https://github.com/dylanhoryza \
-Spencer Henegar - https://github.com/HenegarCodes
+- Brandon Kelly - https://github.com/bkness \
+- Dylan Horyza - https://github.com/dylanhoryza \
+- Spencer Henegar - https://github.com/HenegarCodes
 
 ## License
 
