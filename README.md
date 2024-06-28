@@ -43,7 +43,7 @@ Join us at Video Game Hub and unlock a world of limitless possibilities. Shape, 
 
 `npm run build`
 
-4. Start the development server: 
+4. Start the development server from the client folder: 
 
 `npm run develop`
 
