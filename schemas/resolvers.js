@@ -41,7 +41,7 @@ const resolvers = {
       }
       return await Post.find();
     },
-    
+
     // grabs all comments for a specific post by postDd 
     comments: async (_, { postId }, context) => {
       try {
@@ -77,7 +77,7 @@ const resolvers = {
 
       return { token, user };
     },
-    
+
     // logout mutation that still needs to be added to the front end
     logout: async (_, __, context) => {
       if (!context.user) {
@@ -87,7 +87,7 @@ const resolvers = {
       return { success: true, message: 'Logged out successfully' };
     },
 
-      //creates a post with title content and current user 
+    //creates a post with title content and current user 
     createPost: async (_, { title, content }, context) => {
       if (!context.user) {
         throw new AuthenticationError('You must be logged in to create a post!');
