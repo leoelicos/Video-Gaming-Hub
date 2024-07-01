@@ -25,9 +25,10 @@ const HomePage = () => {
   const [games, setGames] = useState([]);
   const [showLogin, setShowLogin] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
-  const [isSignUpMode, setIsSignUpMode] = useState(false); 
+  const [isSignUpMode, setIsSignUpMode] = useState(false);
   const [searchGames, setSearchedGames] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [searchError, setSearchError] = useState(false);
 
   useEffect(() => {
     const getAllGames = async () => {
@@ -42,6 +43,7 @@ const HomePage = () => {
         const data = await response.json();
         setGames(data.results);
       } catch (error) {
+        setSearchError(true);
         console.error('Error fetching data:', error);
       }
     };
@@ -62,7 +64,7 @@ const HomePage = () => {
 
   const handleShowLogin = () => {
     setShowLogin(true);
-    setIsSignUpMode(false); 
+    setIsSignUpMode(false);
   };
 
   const handleCloseLogin = () => {
@@ -83,62 +85,61 @@ const HomePage = () => {
     setShowSignUp(true); // Show the signup modal
   };
 
-    // Function to handle searching a game in API
-    const handleGameSearch = async () => {
-      const searchURL = `https://api.rawg.io/api/games?key=9cdfe8e7af674d6d825da9805c8c6545&dates=2017-01-01,2024-01-01&added&page_size=9&search=-${searchGames}&search_precise`;
-  
-      try {
-        const response = await fetch(searchURL);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
+  // Function to handle searching a game in API
+  const handleGameSearch = async () => {
+    const searchURL = `https://api.rawg.io/api/games?key=9cdfe8e7af674d6d825da9805c8c6545&dates=2017-01-01,2024-01-01&added&page_size=9&search=-${searchGames}&search_precise`;
+
+    try {
+      const response = await fetch(searchURL);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      console.log(data.results);
+      setSearchResults(data.results);
+    } catch (error) {
+      console.error('Error searching game', error);
+    }
+  };
+
+  // Function to turn platform names into images
+  const getPlatformIcons = (platforms) => {
+    // Check if platforms is defined and is an array
+    if (Array.isArray(platforms)) {
+      return platforms.map((platformData, index) => {
+        // Access the platform name from the nested object
+        const platformName = platformData.platform.name;
+
+        let icon = null;
+        switch (platformName) {
+          case 'PlayStation':
+            icon = <FontAwesomeIcon icon={faPlaystation} />;
+            break;
+          case 'Xbox':
+            icon = <FontAwesomeIcon icon={faXbox} />;
+            break;
+          case 'PC':
+            icon = <FontAwesomeIcon icon={faWindows} />;
+            break;
+          default:
+            icon = null;
         }
-        const data = await response.json();
-        console.log(data.results);
-        setSearchResults(data.results);
-      } catch (error) {
-        console.error('Error searching game', error);
-      }
-    };
-  
-    // Function to turn platform names into images
-    const getPlatformIcons = (platforms) => {
-      // Check if platforms is defined and is an array
-      if (Array.isArray(platforms)) {
-        return platforms.map((platformData, index) => {
-          // Access the platform name from the nested object
-          const platformName = platformData.platform.name;
-  
-          let icon = null;
-          switch (platformName) {
-            case 'PlayStation':
-              icon = <FontAwesomeIcon icon={faPlaystation} />;
-              break;
-            case 'Xbox':
-              icon = <FontAwesomeIcon icon={faXbox} />;
-              break;
-            case 'PC':
-              icon = <FontAwesomeIcon icon={faWindows} />;
-              break;
-            default:
-              icon = null;
-          }
-          return <span key={index}>{icon}</span>;
-        });
-      }
-      // Return an empty array or a default value if platforms is not an array
-      return [];
-    };
-  
+        return <span key={index}>{icon}</span>;
+      });
+    }
+    // Return an empty array or a default value if platforms is not an array
+    return [];
+  };
 
   return (
-    
+    <div className="content-container">
 
-
-      <div className="content-container">
-     
-        <Navbar />
-        <div className="carousel-container">
-          <div className="carousel-wrapper">
+      <Navbar />
+      <div className="carousel-container">
+        <div className="carousel-wrapper">
+          {(searchError) ? (
+            <p>There was an error <button onClick={() => window.reload()}>Refresh</button></p>
+          ) :
             <Slider {...settings}>
               {games.map((game) => (
                 <div className='carousel-item' key={game.id}>
@@ -147,9 +148,10 @@ const HomePage = () => {
                 </div>
               ))}
             </Slider>
-          </div>
+          }
         </div>
-        <div className='input-group mb-3 search-group'>
+      </div>
+      <div className='input-group mb-3 search-group'>
         <input className='search-bar'
           type='text'
           placeholder='Search for games...'
@@ -159,87 +161,87 @@ const HomePage = () => {
         <button className='search-button' onClick={handleGameSearch}>Search</button>
       </div>
       <div className='container'>
-  <div className='row'>
-    {searchResults.map((game) => (
-      <div className='col-lg-5 col-md-6 col-sm-12' key={game.id}>
-        <div className='item'>
-          <div className="image-container">
-            <img
-              className='game-image'
-              src={game.background_image}
-              alt={game.name}
-              style={{ width: '100%', height: 'auto' }}
-            />
-            <div className="overlay">
-              <h3 className='game-name'>{game.name}</h3>
-              <p className='platforms'>
-                {getPlatformIcons(game.parent_platforms)}
-              </p>
-              <div className='rating-container'>
-                <p className='rating-label'>Rating:</p>
-                <p className='rating'>⭐️{game.rating}</p>
+        <div className='row'>
+          {searchResults.map((game) => (
+            <div className='col-lg-5 col-md-6 col-sm-12' key={game.id}>
+              <div className='item'>
+                <div className="image-container">
+                  <img
+                    className='game-image'
+                    src={game.background_image}
+                    alt={game.name}
+                    style={{ width: '100%', height: 'auto' }}
+                  />
+                  <div className="overlay">
+                    <h3 className='game-name'>{game.name}</h3>
+                    <p className='platforms'>
+                      {getPlatformIcons(game.parent_platforms)}
+                    </p>
+                    <div className='rating-container'>
+                      <p className='rating-label'>Rating:</p>
+                      <p className='rating'>⭐️{game.rating}</p>
+                    </div>
+                    <div className='released-container'>
+                      <p className='released-label'>Released:</p>
+                      <p className='released'>{game.released}</p>
+                    </div>
+                    <div className='button-container'>
+                      <img
+                        src={wishlistIcon}
+                        alt='Add to Wishlist'
+                        onClick={() => handleAddToWishlist(game.id)}
+                        className='wishlist-button'
+                        style={{ cursor: 'pointer' }}
+                      />
+                      <img
+                        src={currentlyPlayingIcon}
+                        alt='Currently Playing'
+                        onClick={() => handleAddToCurrentlyPlaying(game.id)}
+                        className='currently-playing-button'
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </div>
+                  </div>
+
+                </div>
+
               </div>
-              <div className='released-container'>
-                <p className='released-label'>Released:</p>
-                <p className='released'>{game.released}</p>
-              </div>
-              <div className='button-container'>
-            <img
-              src={wishlistIcon}
-              alt='Add to Wishlist'
-              onClick={() => handleAddToWishlist(game.id)}
-              className='wishlist-button'
-              style={{ cursor: 'pointer' }}
-            />
-            <img
-              src={currentlyPlayingIcon}
-              alt='Currently Playing'
-              onClick={() => handleAddToCurrentlyPlaying(game.id)}
-              className='currently-playing-button'
-              style={{ cursor: 'pointer' }}
-            />
-          </div>
             </div>
-          
-          </div>
-        
+          ))}
         </div>
       </div>
-    ))}
-  </div>
-</div>
 
-        <button className="login-button" onClick={handleShowLogin}>
-          Login
-        </button>
+      <button className="login-button" onClick={handleShowLogin}>
+        Login
+      </button>
 
-        {showLogin && (
-          <>
-            <Backdrop onClick={handleCloseLogin} />
-            <div className="login-overlay">
-              <div className="login-modal">
-                <Login onClose={handleCloseLogin} />
-                {!isSignUpMode && (
-                  <p className="signup-link" onClick={handleSignUpLinkClick}>
-                    Don't have an account? Click here!
-                  </p>
-                )}
-              </div>
+      {showLogin && (
+        <>
+          <Backdrop onClick={handleCloseLogin} />
+          <div className="login-overlay">
+            <div className="login-modal">
+              <Login onClose={handleCloseLogin} />
+              {!isSignUpMode && (
+                <p className="signup-link" onClick={handleSignUpLinkClick}>
+                  Don't have an account? Click here!
+                </p>
+              )}
             </div>
-          </>
-        )}
+          </div>
+        </>
+      )}
 
-        {showSignUp && (
-          <>
-            <Backdrop onClick={handleCloseSignUp} />
-            <div className="signup-overlay">
-              <div className="signup-modal">
-                <SignUp onClose={handleCloseSignUp} />
-              </div>
+      {showSignUp && (
+        <>
+          <Backdrop onClick={handleCloseSignUp} />
+          <div className="signup-overlay">
+            <div className="signup-modal">
+              <SignUp onClose={handleCloseSignUp} />
             </div>
-          </>
-        )}
-      </div>
+          </div>
+        </>
+      )}
+    </div>
 
   );
 };
