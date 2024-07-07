@@ -17,6 +17,8 @@ import wishlistIcon from '../assets/gift-solid.svg'
 import currentlyPlayingIcon from '../assets/gamepad-solid.svg'
 import './Profile.css';
 
+
+
 const Backdrop = ({ onClick }) => {
   return <div className="backdrop" onClick={onClick}></div>;
 };
@@ -87,7 +89,8 @@ const HomePage = () => {
 
   // Function to handle searching a game in API
   const handleGameSearch = async () => {
-    const searchURL = `https://api.rawg.io/api/games?key=9cdfe8e7af674d6d825da9805c8c6545&dates=2017-01-01,2024-01-01&added&page_size=9&search=-${searchGames}&search_precise`;
+
+    const searchURL = `https://api.rawg.io/api/games?key=${GAME_SEARCH_API_KEY}&dates=2017-01-01,2024-01-01&added&page_size=9&search=-${searchGames}&search_precise`;
 
     try {
       const response = await fetch(searchURL);

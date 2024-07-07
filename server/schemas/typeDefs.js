@@ -24,10 +24,6 @@ type Query {
     me: User
 }
 
-type Query {
-  me: User
-}
-
 type Game {
     gameId: ID!
     name: String!

@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 import './App.css'
 import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink, HttpLink } from '@apollo/client'
-import { setContext } from '@apollo/client/link/context' 
+import { setContext } from '@apollo/client/link/context'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import HomePage from './pages/HomePage'
 import { FaGamepad } from "react-icons/fa";
@@ -13,12 +13,12 @@ const authLink = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-      authorization: token? `token holder ${token}`: '' 
+      authorization: token ? `token holder ${token}` : ''
     }
   }
 })
 const client = new ApolloClient({
-  link: authLink.concat(httpLink), 
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache()
 })
 

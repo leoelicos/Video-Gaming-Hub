@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import './NewsPage.css';
 import Navbar from './Navbar';
-
-const apiKey = 'd959c631bba34cff9967acb676b101bf'
+import NewsItem from './NewsItem';
 
 const NewsPage = () => {
   const [articles, setArticles] = useState([]);
+
   useEffect(() => {
     const getAllNews = async () => {
-      const apiURL = `https://newsapi.org/v2/everything?q=gaming&from=2024-01-14&sortBy=popularity&apiKey=d959c631bba34cff9967acb676b101bf`;
+      const apiURL = process.env.NODE_ENV === 'production' ? '/api/news' : 'http://localhost:3001/api/news';
 
       try {
         const response = await fetch(apiURL);
@@ -17,7 +17,6 @@ const NewsPage = () => {
         }
 
         const data = await response.json();
-        console.log(data);
         setArticles(data.articles);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -32,27 +31,27 @@ const NewsPage = () => {
   };
 
   return (
-<div className="container">
-<Navbar />
-  <h1 className='news-feed'>News Feed</h1>
-  <ul className="news-list">
-    {articles.map((article, index) => (
-      <li key={index} className="article" onClick={() => openArticle(article.url)}>
-        <div className="article-content">
-          <h2 className="title">{article.title}</h2>
-          <div className='description-item'>
-          {article.urlToImage && <img src={article.urlToImage} alt={article.title} className="image" />}
-          <p className="description">{article.description}</p>
-          </div>
-         
-        </div>
-      </li>
-    ))}
-  </ul>
-</div>
-
+    <div className="container">
+      <Navbar />
+      <h1 className='news-feed'>News Feed</h1>
+      <ul className="news-list">
+        {articles.map((article, index) => (
+          <li key={index} className="article" onClick={() => openArticle(article.url)}>
+            <NewsItem
+              source={article.source}
+              author={article.author}
+              title={article.title}
+              description={article.description}
+              url={article.url}
+              urlToImage={article.urlToImage}
+              publishedAt={article.publishedAt}
+              content={article.content}
+            />
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 };
 
 export default NewsPage;
-
