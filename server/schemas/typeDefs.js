@@ -16,21 +16,6 @@ type Auth {
     user: User
 }
 
- type Article {
-        source: String
-        author: String
-        title: String
-        description: String
-        url: String
-        urlToImage: String
-        publishedAt: String
-        content: String
-    }
-
-    type Query {
-        getNews: [Article]
-    }
-
 type Query {
     getPost(postId: ID!): Post
     getAllPosts: [Post!]

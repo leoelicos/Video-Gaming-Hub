@@ -1,7 +1,7 @@
 // bring in our models and AuthenticationError + token to use in our resolvers logic
 const { User, Game, Post, Comment } = require('../models');
 const { signToken, AuthenticationError } = require('../utils/auth.js');
-const fetchNews = require('../services/news');
+// const fetchNews = require('../services/news');
 const mongoose = require('mongoose');
 
 const resolvers = {
@@ -40,10 +40,6 @@ const resolvers = {
         throw new AuthenticationError('You must be logged in to view posts!');
       }
       return await Post.find();
-    },
-
-    getNews: async () => {
-      return await fetchNews();
     },
 
     // grabs all comments for a specific post by postDd 

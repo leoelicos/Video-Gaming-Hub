@@ -1,30 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import './NewsPage.css';
 import Navbar from './Navbar';
-import { useQuery, gql } from '@apollo/client';
-
-const GET_NEWS = gql`
-    query GetNews {
-        getNews {
-            source
-            author
-            title
-            description
-            url
-            urlToImage
-            publishedAt
-            content
-        }
-    }
-`;
+import NewsItem from './NewsItem';
 
 const NewsPage = () => {
-  const { loading, error, data } = useQuery(GET_NEWS);
+  const [articles, setArticles] = useState([]);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
+  useEffect(() => {
+    const getAllNews = async () => {
+      const apiURL = process.env.NODE_ENV === 'production' ? '/api/news' : 'http://localhost:3001/api/news';
 
-  const articles = data.getNews;
+      try {
+        const response = await fetch(apiURL);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        setArticles(data.articles);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    getAllNews();
+  }, []);
 
   const openArticle = (url) => {
     window.open(url, '_blank');
@@ -37,13 +37,16 @@ const NewsPage = () => {
       <ul className="news-list">
         {articles.map((article, index) => (
           <li key={index} className="article" onClick={() => openArticle(article.url)}>
-            <div className="article-content">
-              <h2 className="title">{article.title}</h2>
-              <div className='description-item'>
-                {article.urlToImage && <img src={article.urlToImage} alt={article.title} className="image" />}
-                <p className="description">{article.description}</p>
-              </div>
-            </div>
+            <NewsItem
+              source={article.source}
+              author={article.author}
+              title={article.title}
+              description={article.description}
+              url={article.url}
+              urlToImage={article.urlToImage}
+              publishedAt={article.publishedAt}
+              content={article.content}
+            />
           </li>
         ))}
       </ul>
