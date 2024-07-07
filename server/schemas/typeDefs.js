@@ -94,4 +94,4 @@ type Game {
 }
 `
 
-module.exports = typeDefs;
+module.exports = typeDefs
