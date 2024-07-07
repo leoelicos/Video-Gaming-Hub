@@ -17,8 +17,6 @@ import wishlistIcon from '../assets/gift-solid.svg'
 import currentlyPlayingIcon from '../assets/gamepad-solid.svg'
 import './Profile.css';
 
-
-
 const Backdrop = ({ onClick }) => {
   return <div className="backdrop" onClick={onClick}></div>;
 };
@@ -30,7 +28,6 @@ const HomePage = () => {
   const [isSignUpMode, setIsSignUpMode] = useState(false);
   const [searchGames, setSearchedGames] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-  const [searchError, setSearchError] = useState(false);
 
   useEffect(() => {
     const getAllGames = async () => {
@@ -45,7 +42,6 @@ const HomePage = () => {
         const data = await response.json();
         setGames(data.results);
       } catch (error) {
-        setSearchError(true);
         console.error('Error fetching data:', error);
       }
     };
@@ -89,8 +85,7 @@ const HomePage = () => {
 
   // Function to handle searching a game in API
   const handleGameSearch = async () => {
-
-    const searchURL = `https://api.rawg.io/api/games?key=${GAME_SEARCH_API_KEY}&dates=2017-01-01,2024-01-01&added&page_size=9&search=-${searchGames}&search_precise`;
+    const searchURL = `https://api.rawg.io/api/games?key=9cdfe8e7af674d6d825da9805c8c6545&dates=2017-01-01,2024-01-01&added&page_size=9&search=-${searchGames}&search_precise`;
 
     try {
       const response = await fetch(searchURL);
@@ -135,23 +130,20 @@ const HomePage = () => {
   };
 
   return (
+
     <div className="content-container">
 
       <Navbar />
       <div className="carousel-container">
         <div className="carousel-wrapper">
-          {(searchError) ? (
-            <p>There was an error <button onClick={() => window.reload()}>Refresh</button></p>
-          ) :
-            <Slider {...settings}>
-              {games.map((game) => (
-                <div className='carousel-item' key={game.id}>
-                  <img className='carousel-image' src={game.background_image} alt={game.name} style={{ width: '100%', height: 'auto' }} />
-                  <h3 className='carousel-game-name'>{game.name}</h3>
-                </div>
-              ))}
-            </Slider>
-          }
+          <Slider {...settings}>
+            {games.map((game) => (
+              <div className='carousel-item' key={game.id}>
+                <img className='carousel-image' src={game.background_image} alt={game.name} style={{ width: '100%', height: 'auto' }} />
+                <h3 className='carousel-game-name'>{game.name}</h3>
+              </div>
+            ))}
+          </Slider>
         </div>
       </div>
       <div className='input-group mb-3 search-group'>
@@ -245,7 +237,6 @@ const HomePage = () => {
         </>
       )}
     </div>
-
   );
 };
 
