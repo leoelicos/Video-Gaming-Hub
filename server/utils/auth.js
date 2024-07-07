@@ -1,4 +1,3 @@
-// const { AuthenticationError } = require('apollo-server-express'); // import AuthenticationError from apollo-server-express
 const jwt = require('jsonwebtoken');
 const {GraphQLError} = require('graphql');
 
@@ -6,11 +5,11 @@ const secret = 'secretKEY'; // update with secret key
 const expiration = '2h';
 
 module.exports = {
-  AuthenticationError: new GraphQLError('cannot authenticate user', {
-    extensions: {
-      code: 'UNAUTHENTICATED'
-    }
-  }), // export AuthenticationError directly
+  // AuthenticationError: new GraphQLError('cannot authenticate user', {
+  //   extensions: {
+  //     code: 'UNAUTHENTICATED'
+  //   }
+  // }), // export AuthenticationError directly
   authMiddleware: function ({ req }) {
     let token = req.body.token || req.query.token || req.headers.authorization;
 

@@ -85,11 +85,6 @@ type Game {
     createdAt: String!
     updatedAt: String
   }
-
-  type LogoutResponse {
-    success: Boolean
-    message: String
-  }
  
   type Mutation {
     addUser(username: String!, email: String!, password: String!): Auth
@@ -104,8 +99,6 @@ type Game {
     deleteComment(id: ID!): ID!
     deleteFromWishlist(gameId: ID!): User
     deleteFromCurrentlyPlaying(gameId: ID!): User
-    logout: LogoutResponse
-
 }
 `
 

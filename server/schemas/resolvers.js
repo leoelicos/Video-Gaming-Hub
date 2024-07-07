@@ -21,7 +21,7 @@ const resolvers = {
     // gets just the current logged in users post by parent argument and context 
     getMyPost: async (_, __, context) => {
       if (!context.user) {
-        throw new AuthenticationError('You must be logged in to view your posts!');
+        throw AuthenticationError;
       }
       return await Post.find({ author: context.user._id });
     },
@@ -29,7 +29,7 @@ const resolvers = {
     // gets post by parent argument and user 
     getPost: async (_, { postId }, context) => {
       if (!context.user) {
-        throw new AuthenticationError('You must be logged in to view this post!');
+        throw AuthenticationError;
       }
       return await Post.findById(postId);
     },
@@ -37,7 +37,7 @@ const resolvers = {
     // grabs all posts in db
     getAllPosts: async (_, __, context) => {
       if (!context.user) {
-        throw new AuthenticationError('You must be logged in to view posts!');
+        throw AuthenticationError;
       }
       return await Post.find();
     },
@@ -65,36 +65,27 @@ const resolvers = {
     },
     //logs added user in
     login: async (_, { email, password }) => {
+      console.log({email, password})
       const user = await User.findOne({ email });
 
       if (!user) {
-        throw new AuthenticationError('Invalid email or password');
+        throw AuthenticationError;
       }
 
       const correctPw = await user.isCorrectPassword(password);
 
       if (!correctPw) {
-        throw new AuthenticationError('Invalid email or password');
+        throw AuthenticationError;
       }
 
       const token = signToken(user);
-
       return { token, user };
-    },
-
-    // logout mutation that still needs to be added to the front end
-    logout: async (_, __, context) => {
-      if (!context.user) {
-        throw new AuthenticationError('You must be logged in to logout');
-      }
-
-      return { success: true, message: 'Logged out successfully' };
     },
 
     //creates a post with title content and current user 
     createPost: async (_, { title, content }, context) => {
       if (!context.user) {
-        throw new AuthenticationError('You must be logged in to create a post!');
+        throw AuthenticationError;
       }
       const newPost = new Post({
         title,
@@ -108,7 +99,7 @@ const resolvers = {
     },
     updatePost: async (_, { postId, content }, context) => {
       if (!context.user) {
-        throw new AuthenticationError('You must be logged in to update a post!');
+        throw AuthenticationError;
       }
 
       const updatedPost = await Post.findByIdAndUpdate(
@@ -139,7 +130,7 @@ const resolvers = {
     //creates a comment 
     createComment: async (_, { content, post }, context) => {
       if (!context.user) {
-        throw new AuthenticationError('You must be logged in to make a comment!');
+        throw AuthenticationError;
       }
       try {
         const comment = await Comment.create({

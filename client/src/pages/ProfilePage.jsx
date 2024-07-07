@@ -1,18 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import SearchBar from '../components/SearchBar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faPlaystation,
-  faXbox,
-  faWindows,
-} from '@fortawesome/free-brands-svg-icons';
+import { faPlaystation, faXbox, faWindows } from '@fortawesome/free-brands-svg-icons';
 import { Link } from 'react-router-dom';
 import { ADD_TO_WISHLIST } from '../utils/mutations';
-import {
-  ADD_TO_CURRENTLY_PLAYING,
-  REMOVE_FROM_CURRENTLY_PLAYING,
-  REMOVE_FROM_WISHLIST,
-} from '../utils/mutations';
+import { ADD_TO_CURRENTLY_PLAYING, REMOVE_FROM_CURRENTLY_PLAYING, REMOVE_FROM_WISHLIST } from '../utils/mutations';
 import { useQuery } from '@apollo/client';
 import { QUERY_ME } from '../utils/queries';
 import AuthService from '../utils/auth';
@@ -22,6 +14,7 @@ import { useMutation } from '@apollo/client';
 import Navbar from './Navbar';
 import wishlistIcon from '../assets/gift-solid.svg';
 import currentlyPlayingIcon from '../assets/gamepad-solid.svg';
+import { getAllGames } from '../utils/API';
 
 // Profile page function
 const ProfilePage = () => {
@@ -44,37 +37,24 @@ const ProfilePage = () => {
 
   // API call for all games
   useEffect(() => {
-    const getAllGames = async () => {
-      const apiURL = `https://api.rawg.io/api/games?key=9cdfe8e7af674d6d825da9805c8c6545&dates=2023-08-01,2024-02-01&ordering=-added`;
-
+    const init = async () => {
       try {
-        const response = await fetch(apiURL);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-
-        const data = await response.json();
-        console.log(data.results);
+        const response = await getAllGames();
+        setGames(response);
       } catch (error) {
+        setSearchError(true);
         console.error('Error fetching data:', error);
       }
     };
 
-    getAllGames();
+    init();
   }, []);
 
   // Function to handle searching a game in API
   const handleGameSearch = async () => {
-    const searchURL = `https://api.rawg.io/api/games?key=9cdfe8e7af674d6d825da9805c8c6545&dates=2017-01-01,2024-01-01&added&page_size=9&search=-${searchGames}&search_precise`;
-
     try {
-      const response = await fetch(searchURL);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json();
-      console.log(data.results);
-      setSearchResults(data.results);
+      const response = await getAllGames(searchGames);
+      setSearchResults(response);
     } catch (error) {
       console.error('Error searching game', error);
     }
@@ -126,14 +106,14 @@ const ProfilePage = () => {
         image: game.background_image,
         platforms: game.platforms.map((platform) => platform.name),
         rating: game.rating,
-        releaseDate: game.released,
+        releaseDate: game.released
       };
 
       // Call the addToWishlist mutation with the correct variable name
       const { data } = await addToWishlist({
         variables: {
-          gameData: input,
-        },
+          gameData: input
+        }
       });
 
       setWishlist([...wishlist, data.addToWishlist]);
@@ -160,14 +140,14 @@ const ProfilePage = () => {
         image: game.background_image,
         platforms: game.platforms.map((platform) => platform.name),
         rating: game.rating,
-        releaseDate: game.released,
+        releaseDate: game.released
       };
 
       // Call the addToWishlist mutation with the correct variable name
       const { data } = await addToCurrentlyPlaying({
         variables: {
-          gameData: input,
-        },
+          gameData: input
+        }
       });
 
       setCurrentlyPlaying([...currentlyPlaying, data.addToCurrentlyPlaying]);
@@ -182,7 +162,7 @@ const ProfilePage = () => {
   const handleRemoveFromWishlist = async (gameId) => {
     try {
       const { data } = await removeFromWishlist({
-        variables: { gameId },
+        variables: { gameId }
       });
       setWishlist(data.deleteFromWishlist.wishlist);
     } catch (error) {
@@ -190,9 +170,7 @@ const ProfilePage = () => {
     }
   };
 
-  const [removeFromCurrentlyPlaying] = useMutation(
-    REMOVE_FROM_CURRENTLY_PLAYING
-  );
+  const [removeFromCurrentlyPlaying] = useMutation(REMOVE_FROM_CURRENTLY_PLAYING);
   const handleRemoveFromCurrentlyPlaying = async (gameId) => {
     try {
       // Find the game object using the gameId
@@ -208,14 +186,14 @@ const ProfilePage = () => {
         image: game.background_image,
         platforms: game.platforms.map((platform) => platform.name),
         rating: game.rating,
-        releaseDate: game.released,
+        releaseDate: game.released
       };
 
       // Call the addToWishlist mutation with the correct variable name
       const { data } = await removeFromCurrentlyPlaying({
         variables: {
-          gameData: input,
-        },
+          gameData: input
+        }
       });
 
       removeFromCurrentlyPlaying([...currentlyPlaying, data.removeFromCurrentlyPlaying]);
@@ -235,17 +213,22 @@ const ProfilePage = () => {
       <div className='row'>
         <div className='my-4'>
           <h2 className='currently-playing-title'>
-          Currently Playing
+            Currently Playing
             <span className='icon'>
-              <img className='icon-image' src={currentlyPlayingIcon} alt='Icon' />
+              <img
+                className='icon-image'
+                src={currentlyPlayingIcon}
+                alt='Icon'
+              />
             </span>
-            
           </h2>
 
           <div className='container'>
             <div className='row'>
               {userData.currentlyPlaying?.map((game) => (
-                <div className='col-lg-5 col-md-8 col-sm-12' key={game.gameId}>
+                <div
+                  className='col-lg-5 col-md-8 col-sm-12'
+                  key={game.gameId}>
                   <div className='item'>
                     <div className='image-container'>
                       <img
@@ -256,9 +239,7 @@ const ProfilePage = () => {
                       />
                       <div className='overlay'>
                         <h3 className='game-name'>{game.name}</h3>
-                        <p className='platforms'>
-                          {getPlatformIcons(game.platform)}
-                        </p>
+                        <p className='platforms'>{getPlatformIcons(game.platform)}</p>
                         <div className='rating-container'>
                           <p className='rating-label'>Rating:</p>
                           <p className='rating'>⭐️{game.rating}</p>
@@ -278,9 +259,7 @@ const ProfilePage = () => {
                           <img
                             src={currentlyPlayingIcon}
                             alt='Currently Playing'
-                            onClick={() =>
-                              handleRemoveFromCurrentlyPlaying(game.gameId)
-                            }
+                            onClick={() => handleRemoveFromCurrentlyPlaying(game.gameId)}
                             className='currently-playing-button'
                             style={{ cursor: 'pointer' }}
                           />
@@ -296,17 +275,22 @@ const ProfilePage = () => {
       </div>
 
       <section className='my-4'>
-      <h2 className='wishlist-title'>
-           Wishlist
-            <span className='icon'>
-              <img className='icon-image-2' src={wishlistIcon} alt='Icon' />
-            </span>
-            
-          </h2>
+        <h2 className='wishlist-title'>
+          Wishlist
+          <span className='icon'>
+            <img
+              className='icon-image-2'
+              src={wishlistIcon}
+              alt='Icon'
+            />
+          </span>
+        </h2>
         <div className='container'>
           <div className='row'>
             {userData.wishlist?.map((game) => (
-              <div className='col-lg-5 col-md-8 col-sm-12' key={game._id}>
+              <div
+                className='col-lg-5 col-md-8 col-sm-12'
+                key={game._id}>
                 <div className='item'>
                   <div className='image-container'>
                     <img
@@ -317,9 +301,7 @@ const ProfilePage = () => {
                     />
                     <div className='overlay'>
                       <h3 className='game-name'>{game.name}</h3>
-                      <p className='platforms'>
-                        {getPlatformIcons(game.platform)}
-                      </p>
+                      <p className='platforms'>{getPlatformIcons(game.platform)}</p>
                       <div className='rating-container'>
                         <p className='rating-label'>Rating:</p>
                         <p className='rating'>⭐️{game.rating}</p>
@@ -361,14 +343,18 @@ const ProfilePage = () => {
           value={searchGames}
           onChange={(e) => setSearchedGames(e.target.value)}
         />
-        <button className='search-button' onClick={handleGameSearch}>
+        <button
+          className='search-button'
+          onClick={handleGameSearch}>
           Search
         </button>
       </div>
       <div className='container'>
         <div className='row'>
           {searchResults.map((game) => (
-            <div className='col-lg-5 col-md-6 col-sm-12' key={game.id}>
+            <div
+              className='col-lg-5 col-md-6 col-sm-12'
+              key={game.id}>
               <div className='item'>
                 <div className='image-container'>
                   <img
@@ -379,9 +365,7 @@ const ProfilePage = () => {
                   />
                   <div className='overlay'>
                     <h3 className='game-name'>{game.name}</h3>
-                    <p className='platforms'>
-                      {getPlatformIcons(game.parent_platforms)}
-                    </p>
+                    <p className='platforms'>{getPlatformIcons(game.parent_platforms)}</p>
                     <div className='rating-container'>
                       <p className='rating-label'>Rating:</p>
                       <p className='rating'>⭐️{game.rating}</p>
