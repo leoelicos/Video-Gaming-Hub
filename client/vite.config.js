@@ -3,16 +3,16 @@ import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  server: {
-    port: 3002,
-    open: true,
-    proxy: {
-      '/graphql': {
-        target: 'https://video-gaming-hub.onrender.com',
-        secure: false,
-        changeOrigin: true
-      }
-    }
-  }
+	plugins: [react()],
+	server: {
+		port: 3002,
+		open: true,
+		proxy: {
+			'/graphql': {
+				target: 'https://video-gaming-hub.onrender.com',
+				secure: false,
+				changeOrigin: true,
+			},
+		},
+	},
 })
