@@ -9,9 +9,9 @@ export default defineConfig({
 		open: true,
 		proxy: {
 			'/graphql': {
-				target: import.meta.env?.PROD
+				target: process.env.NODE_ENV
 					? 'https://video-gaming-hub.onrender.com'
-					: 'http://localhost:3001',
+					: 'http://localhost:3002',
 				secure: false,
 				changeOrigin: true,
 			},
