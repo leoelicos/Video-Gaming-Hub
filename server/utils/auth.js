@@ -1,4 +1,3 @@
-// const { AuthenticationError } = require('apollo-server-express'); // import AuthenticationError from apollo-server-express
 const jwt = require('jsonwebtoken')
 const { GraphQLError } = require('graphql')
 
