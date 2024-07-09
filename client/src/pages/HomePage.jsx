@@ -3,9 +3,6 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './home.css';
-import Login from './Login';
-import SignUp from './SignUp';
-import Navbar from './Navbar';
 //import ParticlesBackground from './ParticlesBackground';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -17,15 +14,8 @@ import wishlistIcon from '../assets/gift-solid.svg'
 import currentlyPlayingIcon from '../assets/gamepad-solid.svg'
 import './Profile.css';
 
-const Backdrop = ({ onClick }) => {
-  return <div className="backdrop" onClick={onClick}></div>;
-};
-
 const HomePage = () => {
   const [games, setGames] = useState([]);
-  const [showLogin, setShowLogin] = useState(false);
-  const [showSignUp, setShowSignUp] = useState(false);
-  const [isSignUpMode, setIsSignUpMode] = useState(false);
   const [searchGames, setSearchedGames] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
@@ -58,29 +48,6 @@ const HomePage = () => {
     autoplay: true,
     autoplaySpeed: 5000,
     pauseOnHover: true,
-  };
-
-  const handleShowLogin = () => {
-    setShowLogin(true);
-    setIsSignUpMode(false);
-  };
-
-  const handleCloseLogin = () => {
-    setShowLogin(false);
-  };
-
-  const handleShowSignUp = () => {
-    setShowSignUp(true);
-  };
-
-  const handleCloseSignUp = () => {
-    setShowSignUp(false);
-  };
-
-  const handleSignUpLinkClick = () => {
-    setShowLogin(false); // Close the login modal
-    setIsSignUpMode(true); // Set signup mode to true
-    setShowSignUp(true); // Show the signup modal
   };
 
   // Function to handle searching a game in API
@@ -133,7 +100,6 @@ const HomePage = () => {
 
     <div className="content-container">
 
-      <Navbar />
       <div className="carousel-container">
         <div className="carousel-wrapper">
           <Slider {...settings}>
@@ -206,36 +172,6 @@ const HomePage = () => {
         </div>
       </div>
 
-      <button className="login-button" onClick={handleShowLogin}>
-        Login
-      </button>
-
-      {showLogin && (
-        <>
-          <Backdrop onClick={handleCloseLogin} />
-          <div className="login-overlay">
-            <div className="login-modal">
-              <Login onClose={handleCloseLogin} />
-              {!isSignUpMode && (
-                <p className="signup-link" onClick={handleSignUpLinkClick}>
-                  Don't have an account? Click here!
-                </p>
-              )}
-            </div>
-          </div>
-        </>
-      )}
-
-      {showSignUp && (
-        <>
-          <Backdrop onClick={handleCloseSignUp} />
-          <div className="signup-overlay">
-            <div className="signup-modal">
-              <SignUp onClose={handleCloseSignUp} />
-            </div>
-          </div>
-        </>
-      )}
     </div>
   );
 };

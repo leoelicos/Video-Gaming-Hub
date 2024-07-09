@@ -4,7 +4,6 @@ import { useMutation } from '@apollo/client';
 import { CREATE_POST } from '../utils/mutations';
 import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
-import Navbar from './Navbar';
 
 // the logic for handling create a post, should possibly be intergrated with Comments.jsx 
 const CreatePostPage = ({ refetchPosts }) => {
@@ -44,7 +43,6 @@ const CreatePostPage = ({ refetchPosts }) => {
 
     return (
         <div>
-            <Navbar />
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '25vh' }}>
                 <Button
                     component={Link}

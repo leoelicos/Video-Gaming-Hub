@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import { GET_ALL_POSTS } from '../utils/queries';
-import Navbar from './Navbar';
 import Button from '@mui/material/Button';
 
 // home forum page logic 
@@ -19,7 +18,6 @@ const ForumPage = () => {
 
     return (
         <div>
-            <Navbar />
           
 
             <div className='forum-card-container'>

@@ -4,6 +4,12 @@
     left: 0;
     padding: 10px;
     z-index: 1000; /*navbar is above other content */
+
+    button.menu-toggle {
+      background: none;
+      border: none;
+      outline: none;
+    }
   }
   
 .background-nav-container {
@@ -16,6 +22,7 @@
     background-color: #fff;
     margin-bottom: 5px;
     transition: transform 0.3s ease; /* Only transform property is transitioned */
+    caret-color: transparent;
   }
   
   .open {
@@ -38,13 +45,12 @@
     list-style: none;
     padding: 0;
     margin: 0;
-    position: absolute;
-    top: 50px; 
-    left: 0;
     width: 100%; 
+    background-color: hsla(0, 0%, 0%, 0.9);
   }
   
   .menu-items li {
+    width: 100%;
     margin-bottom: 10px;
   }
   

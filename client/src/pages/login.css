@@ -5,10 +5,7 @@
 
 
 
-.login-button {
-    position: fixed;
-    top: 20px;
-    right: 20px;
+.login-button, .logout-button {
     background-color: #007bff;
     color: #fff;
     border: none;
@@ -19,7 +16,7 @@
     z-index: 8;
   }
   
-  .login-button:hover {
+  .login-button:hover, .logout-button:hover {
     background-color: #0056b3;
   }
   
@@ -34,7 +31,7 @@
     backdrop-filter: blur(8px); /* backdrop blur effect */
   }
   
-  .login-modal {
+  .login-modal, .signup-modal {
     position: fixed;
     top: 50%;
     left: 50%;

@@ -19,7 +19,6 @@ import AuthService from '../utils/auth';
 import './Profile.css';
 
 import { useMutation } from '@apollo/client';
-import Navbar from './Navbar';
 import wishlistIcon from '../assets/gift-solid.svg';
 import currentlyPlayingIcon from '../assets/gamepad-solid.svg';
 
@@ -227,7 +226,6 @@ const ProfilePage = () => {
 
   return (
     <div className='container'>
-      <Navbar />
       <header className='my-4'>
         <h1 className='username-title'>Welcome, {userData.username}!</h1>
       </header>

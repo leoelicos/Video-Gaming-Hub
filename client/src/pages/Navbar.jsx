@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './navbar.css';
+import AuthService from '../utils/auth.js'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track authentication state
+  const isLoggedIn = AuthService.loggedIn();
   const [showNotification, setShowNotification] = useState(false); // Track notification state
-  const menuRef = useRef(null);
 
   // Function to handle logout
   const handleLogout = () => {
-    setIsLoggedIn(false); // Update authentication state
+    console.log('logout was clicked')
+    AuthService.logout(); // Update authentication state
   };
 
   // Function to show notification
@@ -20,25 +21,6 @@ const Navbar = () => {
       setShowNotification(false);
     }, 3000); // Hide the notification after 3 seconds
   };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        isOpen &&
-        menuRef.current &&
-        !menuRef.current.contains(event.target) &&
-        !event.target.classList.contains('menu-toggle')
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen]);
 
   const toggleMenu = () => {
     setIsOpen((prevState) => !prevState); // Toggle isOpen
@@ -50,21 +32,17 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      <div className="menu-toggle" onClick={toggleMenu}>
+      <button className="menu-toggle" onClick={toggleMenu}>
         <div className={`hamburger ${isOpen ? 'open' : ''}`}></div>
         <div className={`hamburger ${isOpen ? 'open' : ''}`}></div>
         <div className={`hamburger ${isOpen ? 'open' : ''}`}></div>
-        <div className={`hamburger ${isOpen ? 'open' : ''}`}></div>
-      </div>
+      </button>
       {isOpen && (
-        <ul className="menu-items" ref={menuRef}>
+        <ul className="menu-items">
           <li className='background-nav-container'><Link to="/" onClick={closeMenu}>Home</Link></li>
           <li className='background-nav-container'><Link to="/profile" onClick={closeMenu}>Profile</Link></li>
           <li className='background-nav-container'><Link to="/blog" onClick={closeMenu}>Forum</Link></li>
           <li className='background-nav-container'><Link to="/news" onClick={closeMenu}>News</Link></li>
-          {isLoggedIn && (
-            <li><button onClick={handleLogout}>Logout</button></li>
-          )}
         </ul>
       )}
       {showNotification && (

@@ -3,7 +3,6 @@ import { useQuery, useMutation } from '@apollo/client';
 import { GET_USER_POSTS } from '../utils/queries';
 import { DELETE_POST, UPDATE_POST } from '../utils/mutations';
 import Button from '@mui/material/Button';
-import Navbar from './Navbar';
 import UpdatePostForm from './UpdatePostForm';
 
 // grabs post of specific users post by using the GET_USER_POSTS front and back end query
@@ -62,7 +61,6 @@ const UserPostPage = () => {
 
   return (
     <div className="forum-card-container">
-      <Navbar />
       <div className="forum-card">
         {data.getMyPost.map((post) => (
           <div className="post" key={post._id}>

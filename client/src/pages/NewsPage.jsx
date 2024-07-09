@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import './NewsPage.css';
-import Navbar from './Navbar';
 import NewsItem from './NewsItem';
 
 const NewsPage = () => {
   const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getAllNews = async () => {
@@ -17,6 +17,7 @@ const NewsPage = () => {
         }
 
         const data = await response.json();
+        setLoading(false)
         setArticles(data.articles);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -32,8 +33,8 @@ const NewsPage = () => {
 
   return (
     <div className="container">
-      <Navbar />
       <h1 className='news-feed'>News Feed</h1>
+      {loading ? <p>Loading</p> :
       <ul className="news-list">
         {articles.map((article, index) => (
           <li key={index} className="article" onClick={() => openArticle(article.url)}>
@@ -50,6 +51,7 @@ const NewsPage = () => {
           </li>
         ))}
       </ul>
+      }
     </div>
   );
 };
