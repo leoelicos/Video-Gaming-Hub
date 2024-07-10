@@ -19,10 +19,8 @@ import AuthService from '../utils/auth'
 import './Profile.css'
 
 import { useMutation } from '@apollo/client'
-import Navbar from './Navbar'
 import wishlistIcon from '../assets/gift-solid.svg'
 import currentlyPlayingIcon from '../assets/gamepad-solid.svg'
-import { getAllGames } from '../utils/API'
 
 // Profile page function
 const ProfilePage = () => {
@@ -31,7 +29,6 @@ const ProfilePage = () => {
 	const [wishlist, setWishlist] = useState([])
 	const [currentlyPlaying, setCurrentlyPlaying] = useState([])
 	const [userId, setUserId] = useState(null)
-	const [searchError, setSearchError] = useState(false)
 	// const [userData, setUserData] = useState(null);
 	console.log(QUERY_ME)
 	const { loading, data } = useQuery(QUERY_ME)
@@ -45,25 +42,38 @@ const ProfilePage = () => {
 	// }, [data]);
 
 	// API call for all games
-	// useEffect(() => {
-	// 	const init = async () => {
-	// 		try {
-	// 			const response = await getAllGames()
-	// 			setGames(response)
-	// 		} catch (error) {
-	// 			setSearchError(true)
-	// 			console.error('Error fetching data:', error)
-	// 		}
-	// 	}
+	useEffect(() => {
+		const getAllGames = async () => {
+			const apiURL = `https://api.rawg.io/api/games?key=9cdfe8e7af674d6d825da9805c8c6545&dates=2023-08-01,2024-02-01&ordering=-added`
 
-	// 	init()
-	// }, [])
+			try {
+				const response = await fetch(apiURL)
+				if (!response.ok) {
+					throw new Error('Network response was not ok')
+				}
+
+				const data = await response.json()
+				console.log(data.results)
+			} catch (error) {
+				console.error('Error fetching data:', error)
+			}
+		}
+
+		getAllGames()
+	}, [])
 
 	// Function to handle searching a game in API
 	const handleGameSearch = async () => {
+		const searchURL = `https://api.rawg.io/api/games?key=9cdfe8e7af674d6d825da9805c8c6545&dates=2017-01-01,2024-01-01&added&page_size=9&search=-${searchGames}&search_precise`
+
 		try {
-			const response = await getAllGames(searchGames)
-			setSearchResults(response)
+			const response = await fetch(searchURL)
+			if (!response.ok) {
+				throw new Error('Network response was not ok')
+			}
+			const data = await response.json()
+			console.log(data.results)
+			setSearchResults(data.results)
 		} catch (error) {
 			console.error('Error searching game', error)
 		}
@@ -217,7 +227,6 @@ const ProfilePage = () => {
 
 	return (
 		<div className="container">
-			<Navbar />
 			<header className="my-4">
 				<h1 className="username-title">Welcome, {userData.username}!</h1>
 			</header>
