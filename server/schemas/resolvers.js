@@ -1,7 +1,6 @@
 // bring in our models and AuthenticationError + token to use in our resolvers logic
 const { User, Game, Post, Comment } = require('../models')
 const { signToken, AuthenticationError } = require('../utils/auth.js')
-// const fetchNews = require('../services/news');
 const mongoose = require('mongoose')
 
 const resolvers = {
@@ -10,7 +9,7 @@ const resolvers = {
 		me: async (parent, args, context) => {
 			if (context.user) {
 				const userData = await User.findOne({ _id: context.user._id }).select(
-					'-__v -password',
+					'-__v -password'
 				)
 
 				return userData
@@ -22,7 +21,7 @@ const resolvers = {
 		// gets just the current logged in users post by parent argument and context
 		getMyPost: async (_, __, context) => {
 			if (!context.user) {
-				throw new AuthenticationError('You must be logged in to view your posts!')
+				throw AuthenticationError
 			}
 			return await Post.find({ author: context.user._id })
 		},
@@ -30,7 +29,7 @@ const resolvers = {
 		// gets post by parent argument and user
 		getPost: async (_, { postId }, context) => {
 			if (!context.user) {
-				throw new AuthenticationError('You must be logged in to view this post!')
+				throw AuthenticationError
 			}
 			return await Post.findById(postId)
 		},
@@ -38,7 +37,7 @@ const resolvers = {
 		// grabs all posts in db
 		getAllPosts: async (_, __, context) => {
 			if (!context.user) {
-				throw new AuthenticationError('You must be logged in to view posts!')
+				throw AuthenticationError
 			}
 			return await Post.find()
 		},
@@ -65,13 +64,13 @@ const resolvers = {
 			const user = await User.findOne({ email })
 
 			if (!user) {
-				throw new AuthenticationError('Invalid email or password')
+				throw AuthenticationError
 			}
 
 			const correctPw = await user.isCorrectPassword(password)
 
 			if (!correctPw) {
-				throw new AuthenticationError('Invalid email or password')
+				throw AuthenticationError
 			}
 
 			const token = signToken(user)
@@ -82,7 +81,7 @@ const resolvers = {
 		// logout mutation that still needs to be added to the front end
 		logout: async (_, __, context) => {
 			if (!context.user) {
-				throw new AuthenticationError('You must be logged in to logout')
+				throw AuthenticationError
 			}
 
 			return { success: true, message: 'Logged out successfully' }
@@ -91,7 +90,7 @@ const resolvers = {
 		//creates a post with title content and current user
 		createPost: async (_, { title, content }, context) => {
 			if (!context.user) {
-				throw new AuthenticationError('You must be logged in to create a post!')
+				throw AuthenticationError
 			}
 			const newPost = new Post({
 				title,
@@ -105,13 +104,13 @@ const resolvers = {
 		},
 		updatePost: async (_, { postId, content }, context) => {
 			if (!context.user) {
-				throw new AuthenticationError('You must be logged in to update a post!')
+				throw AuthenticationError
 			}
 
 			const updatedPost = await Post.findByIdAndUpdate(
 				postId,
 				{ content, updatedAt: new Date().toISOString() },
-				{ new: true },
+				{ new: true }
 			)
 			if (!updatedPost) {
 				throw new Error('Post not found')
@@ -136,7 +135,7 @@ const resolvers = {
 		//creates a comment
 		createComment: async (_, { content, post }, context) => {
 			if (!context.user) {
-				throw new AuthenticationError('You must be logged in to make a comment!')
+				throw AuthenticationError
 			}
 			try {
 				const comment = await Comment.create({
@@ -155,7 +154,7 @@ const resolvers = {
 				const updatedComment = await Comment.findByIdAndUpdate(
 					id,
 					{ content, updatedAt: new Date().toISOString() },
-					{ new: true },
+					{ new: true }
 				)
 
 				if (!updatedComment) {
@@ -182,7 +181,7 @@ const resolvers = {
 				const updatedUser = await User.findByIdAndUpdate(
 					{ _id: context.user._id },
 					{ $push: { wishlist: gameData } },
-					{ new: true },
+					{ new: true }
 				)
 
 				return updatedUser
@@ -194,7 +193,7 @@ const resolvers = {
 				const updatedUser = await User.findByIdAndUpdate(
 					{ _id: context.user._id },
 					{ $push: { currentlyPlaying: gameData } },
-					{ new: true },
+					{ new: true }
 				)
 
 				return updatedUser
@@ -208,7 +207,7 @@ const resolvers = {
 				const updatedUser = await User.findByIdAndUpdate(
 					{ _id: context.user._id },
 					{ $pull: { wishlist: { gameId } } },
-					{ new: true },
+					{ new: true }
 				)
 				return updatedUser
 			}
@@ -220,7 +219,7 @@ const resolvers = {
 				const updatedUser = await User.findByIdAndUpdate(
 					{ _id: context.user._id },
 					{ $pull: { wishlist: { gameId } } },
-					{ new: true },
+					{ new: true }
 				)
 				return updatedUser
 			}

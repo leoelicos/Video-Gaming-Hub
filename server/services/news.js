@@ -7,7 +7,7 @@ const fetchNews = async () => {
 
 	try {
 		const response = await axios.get(url)
-		console.log(response.data.articles)
+		// console.log(response.data.articles)
 		return response.data.articles
 	} catch (error) {
 		console.error('Error fetching news:', error)

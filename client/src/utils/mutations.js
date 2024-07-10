@@ -27,15 +27,6 @@ export const LOGIN_USER = gql`
 	}
 `
 
-export const LOGOUT_USER = gql`
-	mutation Logout {
-		logout {
-			success
-			message
-		}
-	}
-`
-
 export const ADD_TO_WISHLIST = gql`
 	mutation addToWishlist($gameData: AddToWishlistInput!) {
 		addToWishlist(gameData: $gameData) {

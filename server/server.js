@@ -7,7 +7,6 @@ const { typeDefs, resolvers } = require('./schemas')
 const fetchNews = require('./services/news')
 const db = require('./config/connection')
 const cors = require('cors')
-
 const app = express()
 const PORT = process.env.PORT || 3001
 const server = new ApolloServer({
@@ -18,15 +17,15 @@ const server = new ApolloServer({
 const startApolloServer = async () => {
 	await server.start()
 
-	app.use(cors())
 	app.use(express.urlencoded({ extended: true }))
 	app.use(express.json())
-
+	app.use(cors())
+	app.use(logger)
 	app.use(
 		'/graphql',
 		expressMiddleware(server, {
 			context: authMiddleware,
-		}),
+		})
 	)
 
 	//News route defined
@@ -57,3 +56,8 @@ const startApolloServer = async () => {
 }
 
 startApolloServer()
+
+const logger = (req, res, next) => {
+	console.log(`${req.method} request to ${req.url}`)
+	next()
+}
