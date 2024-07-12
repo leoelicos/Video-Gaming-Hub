@@ -14,28 +14,33 @@ import {
 import wishlistIcon from '../assets/gift-solid.svg'
 import currentlyPlayingIcon from '../assets/gamepad-solid.svg'
 import './Profile.css'
-
-// import { getAllGames } from '../utils/API'
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
+import { GET_ALL_GAMES, QUERY_ME } from '../utils/API'
+import { ADD_TO_CURRENTLY_PLAYING, ADD_TO_WISHLIST } from '../utils/mutations'
 
 const HomePage = () => {
 	const [games, setGames] = useState([])
 	const [searchGames, setSearchedGames] = useState('')
 	const [searchResults, setSearchResults] = useState([])
 	const { loading, data, refetch: refetchMe } = useQuery(GET_ME)
+	console.log(data)
+	const userData = data?.me || {}
 
-	useEffect(() => {
-		const init = async () => {
-			try {
-				const response = await getAllGames()
-				setGames(response)
-			} catch (error) {
-				setSearchError(true)
-				console.error('Error fetching data:', error)
-			}
-		}
+	const { loading: gamesLoading, error: gamesError } = useQuery(GET_ALL_GAMES, {
+		variables: { search: '' },
+		onCompleted: (data) => {
+			setGames(data.getAllGames)
+		},
+	})
 
-		init()
-	}, [])
+	const [
+		searchAllGames,
+		{ loading: searchAllGamesLoading, error: searchAllGamesError },
+	] = useLazyQuery(GET_ALL_GAMES, {
+		onCompleted: (data) => {
+			setSearchResults(data.getAllGames)
+		},
+	})
 
 	const settings = {
 		dots: true,
