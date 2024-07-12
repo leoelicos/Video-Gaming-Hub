@@ -51,7 +51,60 @@ const resolvers = {
 				throw new Error('Failed to fetch comments')
 			}
 		},
+		// returns all games from rawr
+		getAllGames: async (_, { search }, context) => {
+			try {
+				let apiURL = `https://api.rawg.io/api/games?key=${RAWG_API_KEY}`
+				if (search.length > 0) {
+					apiURL += `&added&page_size=9&search=${search}&search_precise&ordering=-released`
+				}
+				const response = await axios.get(apiURL)
+				// const response = await new Promise((res) => res(mockGames))
+				if (response.status !== 200) throw 'Failed to fetch games'
+				const mapped = response.data.results.map((result) => {
+					return {
+						gameId: result.id || 0,
+						name: result.name || 'untitled',
+						image: result.background_image || '',
+						platforms:
+							result.platforms?.map((platform) => platform.platform?.name || '') || [],
+						rating: result.rating || 0,
+						releaseDate: result.released || '1980-01-01',
+					}
+				})
+				return mapped
+			} catch (error) {
+				throw new Error('Failed to get games')
+			}
+		},
+
+		// gets all news from news api
+		getAllNews: async () => {
+			try {
+				const url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${process.env.NEWS_API_KEY}`
+				const response = await axios.get(url)
+				// const response = await new Promise((res) => res(mockNews))
+
+				if (response.status !== 200) throw 'Failed to fetch news'
+				const mapped = response.data.articles.map((results) => {
+					return {
+						source: result.source?.name || '',
+						author: result.author || '',
+						title: result.title || '',
+						description: result.description || '',
+						url: result.url || '',
+						urlToImage: result.urlToImage || '',
+						publishedAt: result.publishedAt || '',
+						content: result.content || '',
+					}
+				})
+				return mapped
+			} catch (error) {
+				throw new Error('Failed to get news')
+			}
+		},
 	},
+
 	Mutation: {
 		// add user to db
 		addUser: async (_, { username, email, password }) => {

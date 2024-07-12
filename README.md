@@ -12,6 +12,7 @@ Welcome to Video Game Hub, the premier destination for gamers seeking a personal
 ### Features
 
 Video Game Hub offers tailored features for the modern gamer:
+
 - Showcase recently played games
 - Craft wishlists
 - Share latest pickups with fellow enthusiasts
@@ -33,7 +34,7 @@ Join us at Video Game Hub and unlock a world of limitless possibilities. Shape, 
 1. Clone the repository:
 
 `git clone https://github.com/your-username/your-project.git`
-   `cd your-projec`
+`cd your-projec`
 
 2. Install Dependencies
 
@@ -43,7 +44,7 @@ Join us at Video Game Hub and unlock a world of limitless possibilities. Shape, 
 
 `npm run build`
 
-4. Start the development server from the client folder: 
+4. Start the development server from the client folder:
 
 `npm run develop`
 
@@ -54,9 +55,10 @@ Join us at Video Game Hub and unlock a world of limitless possibilities. Shape, 
 - Open your browser and navigate to [http://localhost:3000](http://localhost:3000) to view the application.
 
 - Alternatively, visit our website at [Video Game Hub](https://video-gaming-hub.onrender.com/)<br>
-https://video-gaming-hub.onrender.com/
+  https://video-gaming-hub.onrender.com/
 
 ## Credits
+
 - Brandon Kelly - https://github.com/bkness \
 - Dylan Horyza - https://github.com/dylanhoryza \
 - Spencer Henegar - https://github.com/HenegarCodes
@@ -66,5 +68,3 @@ https://video-gaming-hub.onrender.com/
 [MIT](https://choosealicense.com/licenses/mit/)
 
 please see other information on license in the code repository.
-
-
