@@ -119,3 +119,31 @@ export const GET_COMMENTS = gql`
 		}
 	}
 `
+
+export const GET_ALL_GAMES = gql`
+	query GetAllGames($search: String) {
+		getAllGames(search: $search) {
+			gameId
+			name
+			image
+			platforms
+			rating
+			releaseDate
+		}
+	}
+`
+
+export const GET_ALL_NEWS = gql`
+	query Query {
+		getAllNews {
+			source
+			author
+			title
+			description
+			url
+			urlToImage
+			publishedAt
+			content
+		}
+	}
+`

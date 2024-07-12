@@ -2,32 +2,18 @@ import React, { useEffect, useState } from 'react'
 import './NewsPage.css'
 import Navbar from './Navbar'
 import NewsItem from './NewsItem'
+import { GET_ALL_NEWS } from '../utils/queries'
+import { useQuery } from '@apollo/client'
 
 const NewsPage = () => {
 	const [articles, setArticles] = useState([])
-
-	useEffect(() => {
-		const getAllNews = async () => {
-			const apiURL =
-				process.env.NODE_ENV === 'production'
-					? '/api/news'
-					: 'http://localhost:3001/api/news'
-
-			try {
-				const response = await fetch(apiURL)
-				if (!response.ok) {
-					throw new Error('Network response was not ok')
-				}
-
-				const data = await response.json()
-				setArticles(data.articles)
-			} catch (error) {
-				console.error('Error fetching data:', error)
-			}
-		}
-
-		getAllNews()
-	}, [])
+	const { loading: newsLoading, error: newsError } = useQuery(GET_ALL_NEWS, {
+		variables: { search: '' },
+		fetchPolicy: 'cache-first',
+		onCompleted: (data) => {
+			setArticles(data.getAllNews)
+		},
+	})
 
 	const openArticle = (url) => {
 		window.open(url, '_blank')

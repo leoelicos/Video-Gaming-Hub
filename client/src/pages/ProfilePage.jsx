@@ -13,8 +13,8 @@ import {
 	REMOVE_FROM_CURRENTLY_PLAYING,
 	REMOVE_FROM_WISHLIST,
 } from '../utils/mutations'
-import { useQuery } from '@apollo/client'
-import { QUERY_ME } from '../utils/queries'
+import { useLazyQuery, useQuery } from '@apollo/client'
+import { GET_ALL_GAMES, QUERY_ME } from '../utils/queries'
 import AuthService from '../utils/auth'
 import './Profile.css'
 
@@ -31,7 +31,7 @@ const ProfilePage = () => {
 	const [userId, setUserId] = useState(null)
 	// const [userData, setUserData] = useState(null);
 	console.log(QUERY_ME)
-	const { loading, data } = useQuery(QUERY_ME)
+	const { loading, data, refetch: refetchMe } = useQuery(QUERY_ME)
 	console.log(data)
 	const userData = data?.me || {}
 
@@ -41,102 +41,68 @@ const ProfilePage = () => {
 	//   }
 	// }, [data]);
 
-	// API call for all games
-	useEffect(() => {
-		const getAllGames = async () => {
-			const apiURL = `https://api.rawg.io/api/games?key=9cdfe8e7af674d6d825da9805c8c6545&dates=2023-08-01,2024-02-01&ordering=-added`
-
-			try {
-				const response = await fetch(apiURL)
-				if (!response.ok) {
-					throw new Error('Network response was not ok')
-				}
-
-				const data = await response.json()
-				console.log(data.results)
-			} catch (error) {
-				console.error('Error fetching data:', error)
-			}
-		}
-
-		getAllGames()
-	}, [])
-
 	// Function to handle searching a game in API
-	const handleGameSearch = async () => {
-		const searchURL = `https://api.rawg.io/api/games?key=9cdfe8e7af674d6d825da9805c8c6545&dates=2017-01-01,2024-01-01&added&page_size=9&search=-${searchGames}&search_precise`
-
-		try {
-			const response = await fetch(searchURL)
-			if (!response.ok) {
-				throw new Error('Network response was not ok')
-			}
-			const data = await response.json()
-			console.log(data.results)
-			setSearchResults(data.results)
-		} catch (error) {
-			console.error('Error searching game', error)
-		}
-	}
+	const [
+		searchAllGames,
+		{ loading: searchAllGamesLoading, error: searchAllGamesError },
+	] = useLazyQuery(GET_ALL_GAMES, {
+		fetchPolicy: 'cache-first',
+		onCompleted: (data) => {
+			setSearchResults(data.getAllGames)
+		},
+	})
+	const handleGameSearch = async () =>
+		searchAllGames({ variables: { search: searchGames } })
 
 	// Function to turn platform names into images
-	const getPlatformIcons = (platforms) => {
-		// Check if platforms is defined and is an array
-		if (Array.isArray(platforms)) {
-			return platforms.map((platformData, index) => {
-				// Access the platform name from the nested object
-				const platformName = platformData.platform.name
-
-				let icon = null
-				switch (platformName) {
-					case 'PlayStation':
-						icon = <FontAwesomeIcon icon={faPlaystation} />
-						break
-					case 'Xbox':
-						icon = <FontAwesomeIcon icon={faXbox} />
-						break
-					case 'PC':
-						icon = <FontAwesomeIcon icon={faWindows} />
-						break
-					default:
-						icon = null
-				}
-				return <span key={index}>{icon}</span>
-			})
+	const getPlatformIcons = (platforms) => platforms.map((platform) => {
+		let icon = null
+		switch (platform) {
+			case 'PlayStation':
+				icon = <FontAwesomeIcon icon={faPlaystation} />
+				break
+			case 'Xbox':
+				icon = <FontAwesomeIcon icon={faXbox} />
+				break
+			case 'PC':
+				icon = <FontAwesomeIcon icon={faWindows} />
+				break
+			default:
+				icon = null
 		}
-		// Return an empty array or a default value if platforms is not an array
-		return []
-	}
+		return <span key={platform}>{icon}</span>
+	})
 
 	const [addToWishlist] = useMutation(ADD_TO_WISHLIST)
 
 	const handleAddToWishlist = async (gameId) => {
 		try {
+			if (userData.wishlist.some((game) => game.gameId === gameId)) return; // already in list
+			
 			// Find the game object using the gameId
-			const game = searchResults.find((game) => game.id === gameId)
+			const game = searchResults.find((game) => game.gameId === gameId)
 			console.log(game.name)
 			if (!game) {
 				throw new Error('Game not found')
 			}
 
 			const input = {
-				gameId: game.id.toString(), // Convert gameId to a string
+				gameId: game.gameId.toString(), // Convert gameId to a string
 				name: game.name,
-				image: game.background_image,
-				platforms: game.platforms.map((platform) => platform.name),
+				image: game.image,
+				platforms: game.platforms,
 				rating: game.rating,
-				releaseDate: game.released,
+				releaseDate: game.releaseDate,
 			}
 
 			// Call the addToWishlist mutation with the correct variable name
-			const { data } = await addToWishlist({
+			await addToWishlist({
 				variables: {
 					gameData: input,
 				},
 			})
 
-			setWishlist([...wishlist, data.addToWishlist])
-			// setWishlist(prevState => [...prevState, data.addToWishlist]);
+			refetchMe()
 		} catch (error) {
 			console.error('Error adding to wishlist:', error)
 		}
@@ -145,31 +111,31 @@ const ProfilePage = () => {
 	const [addToCurrentlyPlaying] = useMutation(ADD_TO_CURRENTLY_PLAYING)
 
 	const handleAddToCurrentlyPlaying = async (gameId) => {
+ 
+		
 		try {
+			if (userData.currentlyPlaying.some((game) => game.gameId === gameId)) return; // already in list
+			
 			// Find the game object using the gameId
-			const game = searchResults.find((game) => game.id === gameId)
-			console.log(game.id)
+			const game = searchResults.find((game) => game.gameId === gameId)
+			console.log(game.gameId)
 			if (!game) {
 				throw new Error('Game not found')
 			}
 
 			const input = {
-				gameId: game.id.toString(), // Convert gameId to a string
+				gameId: game.gameId.toString(), // Convert gameId to a string
 				name: game.name,
-				image: game.background_image,
-				platforms: game.platforms.map((platform) => platform.name),
+				image: game.image,
+				platforms: game.platforms,
 				rating: game.rating,
 				releaseDate: game.released,
 			}
 
 			// Call the addToWishlist mutation with the correct variable name
-			const { data } = await addToCurrentlyPlaying({
-				variables: {
-					gameData: input,
-				},
-			})
+			await addToCurrentlyPlaying({ variables: { gameData: input } })
+			refetchMe()
 
-			setCurrentlyPlaying([...currentlyPlaying, data.addToCurrentlyPlaying])
 			// setWishlist(prevState => [...prevState, data.addToWishlist]);
 		} catch (error) {
 			console.error('Error adding to currently playing:', error)
@@ -179,11 +145,11 @@ const ProfilePage = () => {
 	// Function to handle removing a game from the wishlist
 	const [removeFromWishlist] = useMutation(REMOVE_FROM_WISHLIST)
 	const handleRemoveFromWishlist = async (gameId) => {
+		if (userData.wishlist.find((game) => game.gameId === gameId) === null) return; // not in list
+			
 		try {
-			const { data } = await removeFromWishlist({
-				variables: { gameId },
-			})
-			setWishlist(data.deleteFromWishlist.wishlist)
+			await removeFromWishlist({ variables: { gameId } })
+			refetchMe()
 		} catch (error) {
 			console.error('Error removing from wishlist:', error)
 		}
@@ -191,40 +157,19 @@ const ProfilePage = () => {
 
 	const [removeFromCurrentlyPlaying] = useMutation(REMOVE_FROM_CURRENTLY_PLAYING)
 	const handleRemoveFromCurrentlyPlaying = async (gameId) => {
+		if (userData.currentlyPlaying.find((game) => game.gameId === gameId) === null) return; // not in list
 		try {
-			// Find the game object using the gameId
-			const game = userData.find((game) => game.id === gameId)
-			console.log(game.id)
-			if (!game) {
-				throw new Error('Game not found')
-			}
-
-			const input = {
-				gameId: game.id.toString(), // Convert gameId to a string
-				name: game.name,
-				image: game.background_image,
-				platforms: game.platforms.map((platform) => platform.name),
-				rating: game.rating,
-				releaseDate: game.released,
-			}
-
-			// Call the addToWishlist mutation with the correct variable name
-			const { data } = await removeFromCurrentlyPlaying({
-				variables: {
-					gameData: input,
-				},
-			})
-
-			removeFromCurrentlyPlaying([
-				...currentlyPlaying,
-				data.removeFromCurrentlyPlaying,
-			])
-			// setWishlist(prevState => [...prevState, data.addToWishlist]);
+			await removeFromCurrentlyPlaying({ variables: { gameId } })
+			refetchMe()
 		} catch (error) {
 			console.error('Error adding to currently playing:', error)
 		}
 	}
 
+ 
+	if (!userData.username) return <div style={{ background: 'white', color: 'black',textAlign:'center' }}><p>Please login</p></div>
+	
+	
 	return (
 		<div className="container">
 			<header className="my-4">
@@ -242,48 +187,54 @@ const ProfilePage = () => {
 
 					<div className="container">
 						<div className="row">
-							{userData.currentlyPlaying?.map((game) => (
-								<div className="col-lg-5 col-md-8 col-sm-12" key={game.gameId}>
-									<div className="item">
-										<div className="image-container">
-											<img
-												className="game-image"
-												src={game.image}
-												alt={game.name}
-												style={{ width: '100%', height: 'auto' }}
-											/>
-											<div className="overlay">
-												<h3 className="game-name">{game.name}</h3>
-												<p className="platforms">{getPlatformIcons(game.platform)}</p>
-												<div className="rating-container">
-													<p className="rating-label">Rating:</p>
-													<p className="rating">⭐️{game.rating}</p>
-												</div>
-												<div className="released-container">
-													<p className="released-label">Released:</p>
-													<p className="released">{game.releaseDate}</p>
-												</div>
-												<div className="button-container">
-													<img
-														src={wishlistIcon}
-														alt="Add to Wishlist"
-														onClick={() => handleAddToWishlist(game.id)}
-														className="wishlist-button"
-														style={{ cursor: 'pointer' }}
-													/>
-													<img
-														src={currentlyPlayingIcon}
-														alt="Currently Playing"
-														onClick={() => handleRemoveFromCurrentlyPlaying(game.gameId)}
-														className="currently-playing-button"
-														style={{ cursor: 'pointer' }}
-													/>
+							{userData.currentlyPlaying?.length === 0 ? (
+								<p style={{ background: 'white', color: 'black' }}>
+									Currently Playing list is empty
+								</p>
+							) : (
+								userData.currentlyPlaying?.map((game) => (
+									<div className="col-lg-5 col-md-8 col-sm-12" key={game.name}>
+										<div className="item">
+											<div className="image-container">
+												<img
+													className="game-image"
+													src={game.image}
+													alt={game.name}
+													style={{ width: '100%', height: 'auto' }}
+												/>
+												<div className="overlay">
+													<h3 className="game-name">{game.name}</h3>
+													<p className="platforms">{getPlatformIcons(game.platforms)}</p>
+													<div className="rating-container">
+														<p className="rating-label">Rating:</p>
+														<p className="rating">⭐️{game.rating}</p>
+													</div>
+													<div className="released-container">
+														<p className="released-label">Released:</p>
+														<p className="released">{game.releaseDate}</p>
+													</div>
+													<div className="button-container">
+														<img
+															src={wishlistIcon}
+															alt="Add to Wishlist"
+															onClick={() => handleAddToWishlist(game.gameId)}
+															className="wishlist-button"
+															style={{ cursor: 'pointer' }}
+														/>
+														<img
+															src={currentlyPlayingIcon}
+															alt="Currently Playing"
+															onClick={() => handleRemoveFromCurrentlyPlaying(game.gameId)}
+															className="currently-playing-button"
+															style={{ cursor: 'pointer' }}
+														/>
+													</div>
 												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							))}
+								))
+							)}
 						</div>
 					</div>
 				</div>
@@ -298,48 +249,52 @@ const ProfilePage = () => {
 				</h2>
 				<div className="container">
 					<div className="row">
-						{userData.wishlist?.map((game) => (
-							<div className="col-lg-5 col-md-8 col-sm-12" key={game._id}>
-								<div className="item">
-									<div className="image-container">
-										<img
-											className="game-image"
-											src={game.image}
-											alt={game.name}
-											style={{ width: '100%', height: 'auto' }}
-										/>
-										<div className="overlay">
-											<h3 className="game-name">{game.name}</h3>
-											<p className="platforms">{getPlatformIcons(game.platform)}</p>
-											<div className="rating-container">
-												<p className="rating-label">Rating:</p>
-												<p className="rating">⭐️{game.rating}</p>
-											</div>
-											<div className="released-container">
-												<p className="released-label">Released:</p>
-												<p className="released">{game.releaseDate}</p>
-											</div>
-											<div className="button-container">
-												<img
-													src={wishlistIcon}
-													alt="Add to Wishlist"
-													onClick={() => handleRemoveFromWishlist(game.id)}
-													className="wishlist-button"
-													style={{ cursor: 'pointer' }}
-												/>
-												<img
-													src={currentlyPlayingIcon}
-													alt="Currently Playing"
-													onClick={() => handleAddToCurrentlyPlaying(game.id)}
-													className="currently-playing-button"
-													style={{ cursor: 'pointer' }}
-												/>
+						{userData.wishlist?.length === 0 ? (
+							<p style={{ background: 'white', color: 'black' }}>Wishlist is empty</p>
+						) : (
+							userData.wishlist?.map((game) => (
+								<div className="col-lg-5 col-md-8 col-sm-12" key={game.name}>
+									<div className="item">
+										<div className="image-container">
+											<img
+												className="game-image"
+												src={game.image}
+												alt={game.name}
+												style={{ width: '100%', height: 'auto' }}
+											/>
+											<div className="overlay">
+												<h3 className="game-name">{game.name}</h3>
+												<p className="platforms">{getPlatformIcons(game.platforms)}</p>
+												<div className="rating-container">
+													<p className="rating-label">Rating:</p>
+													<p className="rating">⭐️{game.rating}</p>
+												</div>
+												<div className="released-container">
+													<p className="released-label">Released:</p>
+													<p className="released">{game.releaseDate}</p>
+												</div>
+												<div className="button-container">
+													<img
+														src={wishlistIcon}
+														alt="Add to Wishlist"
+														onClick={() => handleRemoveFromWishlist(game.gameId)}
+														className="wishlist-button"
+														style={{ cursor: 'pointer' }}
+													/>
+													<img
+														src={currentlyPlayingIcon}
+														alt="Currently Playing"
+														onClick={() => handleAddToCurrentlyPlaying(game.gameId)}
+														className="currently-playing-button"
+														style={{ cursor: 'pointer' }}
+													/>
+												</div>
 											</div>
 										</div>
 									</div>
 								</div>
-							</div>
-						))}
+							))
+						)}
 					</div>
 				</div>
 			</section>
@@ -358,48 +313,60 @@ const ProfilePage = () => {
 			</div>
 			<div className="container">
 				<div className="row">
-					{searchResults.map((game) => (
-						<div className="col-lg-5 col-md-6 col-sm-12" key={game.id}>
-							<div className="item">
-								<div className="image-container">
-									<img
-										className="game-image"
-										src={game.background_image}
-										alt={game.name}
-										style={{ width: '100%', height: 'auto' }}
-									/>
-									<div className="overlay">
-										<h3 className="game-name">{game.name}</h3>
-										<p className="platforms">{getPlatformIcons(game.parent_platforms)}</p>
-										<div className="rating-container">
-											<p className="rating-label">Rating:</p>
-											<p className="rating">⭐️{game.rating}</p>
-										</div>
-										<div className="released-container">
-											<p className="released-label">Released:</p>
-											<p className="released">{game.released}</p>
-										</div>
-										<div className="button-container">
-											<img
-												src={wishlistIcon}
-												alt="Add to Wishlist"
-												onClick={() => handleAddToWishlist(game.id)}
-												className="wishlist-button"
-												style={{ cursor: 'pointer' }}
-											/>
-											<img
-												src={currentlyPlayingIcon}
-												alt="Currently Playing"
-												onClick={() => handleAddToCurrentlyPlaying(game.id)}
-												className="currently-playing-button"
-												style={{ cursor: 'pointer' }}
-											/>
+					{searchAllGamesLoading ? (
+						<div style={{ background: 'white', color: 'black',textAlign:'center' }}><p>Loading</p></div>
+					) : searchAllGamesError ? (
+						<p>
+							There was an error
+							<br />
+							<button onClick={() => window.reload()}>Refresh</button>
+						</p>
+					) : (
+						searchResults.map((game) => (
+							<div className="col-lg-5 col-md-6 col-sm-12" key={game.name}>
+								<div className="item">
+									<div className="image-container">
+										<img
+											className="game-image"
+											src={game.image}
+											alt={game.name}
+											style={{ width: '100%', height: 'auto' }}
+										/>
+										<div className="overlay">
+											<h3 className="game-name">{game.name}</h3>
+											<p className="platforms">
+												{getPlatformIcons(game.platforms)}
+											</p>
+											<div className="rating-container">
+												<p className="rating-label">Rating:</p>
+												<p className="rating">⭐️{game.rating}</p>
+											</div>
+											<div className="released-container">
+												<p className="released-label">Released:</p>
+												<p className="released">{game.releaseDate}</p>
+											</div>
+											<div className="button-container">
+												<img
+													src={wishlistIcon}
+													alt="Add to Wishlist"
+													onClick={() => handleAddToWishlist(game.gameId)}
+													className="wishlist-button"
+													style={{ cursor: 'pointer' }}
+												/>
+												<img
+													src={currentlyPlayingIcon}
+													alt="Currently Playing"
+													onClick={() => handleAddToCurrentlyPlaying(game.gameId)}
+													className="currently-playing-button"
+													style={{ cursor: 'pointer' }}
+												/>
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-					))}
+						))
+					)}
 				</div>
 			</div>
 		</div>
