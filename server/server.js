@@ -28,16 +28,6 @@ const startApolloServer = async () => {
 		})
 	)
 
-	//News route defined
-	app.get('/api/news', async (req, res) => {
-		try {
-			const articles = await fetchNews()
-			res.json({ articles })
-		} catch (error) {
-			res.status(500).json({ message: 'Error fetching news' })
-		}
-	})
-
 	// if we're in production, serve client/dist as static assets
 	if (process.env.NODE_ENV === 'production') {
 		app.use(express.static(path.join(__dirname, '../client/dist')))

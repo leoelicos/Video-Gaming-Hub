@@ -14,13 +14,14 @@ import {
 import wishlistIcon from '../assets/gift-solid.svg'
 import currentlyPlayingIcon from '../assets/gamepad-solid.svg'
 import './Profile.css'
-import { getAllGames } from '../utils/API'
+
+// import { getAllGames } from '../utils/API'
 
 const HomePage = () => {
 	const [games, setGames] = useState([])
 	const [searchGames, setSearchedGames] = useState('')
 	const [searchResults, setSearchResults] = useState([])
-	const [searchError, setSearchError] = useState(false)
+	const { loading, data, refetch: refetchMe } = useQuery(GET_ME)
 
 	useEffect(() => {
 		const init = async () => {
