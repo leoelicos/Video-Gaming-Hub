@@ -22,7 +22,21 @@ type Query {
     getMyPost: [Post!] 
     comments(postId: ID!): [Comment]
     me: User
+    getAllGames(search: String): [Game]
+    getAllNews: [News]
 }
+
+type News {
+    source: String
+    author: String
+    title: String
+    description: String
+    url: String
+    urlToImage: String
+    publishedAt: String
+    content: String
+}
+
 
 type Game {
     gameId: ID!
@@ -50,7 +64,6 @@ type Game {
     platforms: [String]
     rating: Float
     releaseDate: String
-    
   }
 
   type Post {
@@ -90,7 +103,6 @@ type Game {
     deleteFromWishlist(gameId: ID!): User
     deleteFromCurrentlyPlaying(gameId: ID!): User
     logout: LogoutResponse
-
 }
 `
 

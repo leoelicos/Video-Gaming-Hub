@@ -1,8 +1,12 @@
 // bring in our models and AuthenticationError + token to use in our resolvers logic
+const axios = require('axios')
 const { User, Game, Post, Comment } = require('../models')
 const { signToken, AuthenticationError } = require('../utils/auth.js')
-const mongoose = require('mongoose')
+const mockGames = require('./mockGames.js')
+const mockNews = require('./mockNews.js')
+require('dotenv').config()
 
+const { RAWG_API_KEY } = process.env
 const resolvers = {
 	Query: {
 		// parent, args, then context
@@ -51,6 +55,7 @@ const resolvers = {
 				throw new Error('Failed to fetch comments')
 			}
 		},
+
 		// returns all games from rawr
 		getAllGames: async (_, { search }, context) => {
 			try {
@@ -60,7 +65,7 @@ const resolvers = {
 				}
 				const response = await axios.get(apiURL)
 				// const response = await new Promise((res) => res(mockGames))
-				if (response.status !== 200) throw 'Failed to fetch games'
+				if (response.status !== 200) throw 'Failed to get games'
 				const mapped = response.data.results.map((result) => {
 					return {
 						gameId: result.id || 0,
@@ -78,15 +83,14 @@ const resolvers = {
 			}
 		},
 
-		// gets all news from news api
 		getAllNews: async () => {
 			try {
 				const url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${process.env.NEWS_API_KEY}`
 				const response = await axios.get(url)
 				// const response = await new Promise((res) => res(mockNews))
 
-				if (response.status !== 200) throw 'Failed to fetch news'
-				const mapped = response.data.articles.map((results) => {
+				if (response.status !== 200) throw 'Failed to get news'
+				const mapped = response.data.articles.map((result) => {
 					return {
 						source: result.source?.name || '',
 						author: result.author || '',
@@ -100,11 +104,10 @@ const resolvers = {
 				})
 				return mapped
 			} catch (error) {
-				throw new Error('Failed to get news')
+				throw new Error('Failed to get games')
 			}
 		},
 	},
-
 	Mutation: {
 		// add user to db
 		addUser: async (_, { username, email, password }) => {
@@ -125,8 +128,8 @@ const resolvers = {
 			if (!correctPw) {
 				throw AuthenticationError
 			}
-
-			const token = signToken(user)
+			const { username, _id } = user
+			const token = signToken({ username, email, _id })
 
 			return { token, user }
 		},
@@ -271,7 +274,7 @@ const resolvers = {
 			if (context.user) {
 				const updatedUser = await User.findByIdAndUpdate(
 					{ _id: context.user._id },
-					{ $pull: { wishlist: { gameId } } },
+					{ $pull: { currentlyPlaying: { gameId } } },
 					{ new: true }
 				)
 				return updatedUser
