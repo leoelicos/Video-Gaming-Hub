@@ -8,32 +8,36 @@ import Button from '@mui/material/Button'
 const ForumPage = () => {
 	const { loading, error, data } = useQuery(GET_ALL_POSTS)
 	const posts = data?.getAllPosts
+	const { loading: meLoading, error: meError, data: meData } = useQuery(GET_ME)
+	const userData = meData?.me || {}
 
-	if (loading) {
-		return <p>Loading...</p>
-	}
-	if (error) {
-		return <p>Error: {error.message}</p>
-	}
+	if (!userData.username)
+		return (
+			<div style={{ background: 'white', color: 'black', textAlign: 'center' }}>
+				<h1>Please login</h1>
+			</div>
+		)
 
 	return (
 		<div>
-			<div className="forum-card-container">
-				<div className="forum-card">
-					<h1 className="threads-header">Game Threads</h1>
-					<div
-						className="threads-btns"
-						style={{
-							display: 'flex',
-							justifyContent: 'space-between',
-							alignItems: 'center',
-							padding: '10px',
-							margin: '-10px',
-						}}
-					>
-						<Button component={Link} to="/create-post" variant="contained">
-							Create Post
-						</Button>
+			<div className="content-container">
+				<div className="forum-card-container">
+					<div className="forum-card">
+						<h1 className="threads-header">Game Threads</h1>
+						<div
+							className="threads-btns"
+							style={{
+								display: 'flex',
+								justifyContent: 'space-between',
+								alignItems: 'center',
+								padding: '10px',
+								margin: '-10px',
+							}}
+						>
+							<Button component={Link} to="/create-post" variant="contained">
+								Create Post
+							</Button>
+						</div>
 						<h2
 							className="video-game-forum-top"
 							style={{
