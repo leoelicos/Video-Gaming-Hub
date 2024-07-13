@@ -50,7 +50,6 @@ const Comments = ({ postId }) => {
 
     // function to handle update 
     const handleUpdateComment = (commentId) => {
-        console.log("Update comment clicked for comment ID:", commentId);
         setEditingCommentId(commentId);
     };
 
@@ -63,7 +62,6 @@ const Comments = ({ postId }) => {
             const result = await updateCommentMutation({
                 variables: { id: commentId, content },
             });
-            console.log("Update result:", result);
             setEditingCommentId(null);
             refetch();
         } catch (error) {

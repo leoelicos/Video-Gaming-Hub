@@ -79,7 +79,9 @@
 
 .game-image {
   border-radius: 5px;
-  max-height: 168.75px;
+  height: 20vh;
+  width: 100%;
+  object-fit: cover;
 }
 
 
@@ -87,28 +89,23 @@
 .search-group {
 display: flex;
 justify-content: center; 
-margin-bottom: 20px;
-margin-top: 50px;
 align-items: center;
+
 }
 
 
-.search-bar {
-  border-radius: 10px;
-  height: 35px;
-  width: 300px;
-  
+.search-bar, .search-button {
+  border-radius: 1rem 0 0 1rem;
+  border: none;
+  outline: none;
+  padding: 0.5rem 1rem;
 }
 
 .search-button {
-  border: none; 
-  border-radius: 10px;
-  height: 35px;
-  width: 80px;
+  border-radius: 0 1rem 1rem 0;
   background-color: rgb(167, 156, 184);
   color: white;
   cursor: pointer; 
-  margin-left: 10px; 
 }
 
 .search-button:hover,

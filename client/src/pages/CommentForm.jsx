@@ -25,8 +25,6 @@ const CommentForm = ({ postId, onCommentAdded }) => {
     // comment submit handler 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('postId:', postId);
-        console.log('text:', text);
         try {
             await addComment({ variables: { content: text, post: postId } });
         } catch (error) {

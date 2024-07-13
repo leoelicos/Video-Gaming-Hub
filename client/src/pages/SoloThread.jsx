@@ -33,7 +33,9 @@ const SinglePostPage = () => {
     };
 
     return (
-        <div className='forum-card-container'>
+    <div className="content-container">
+    <div className="forum-card-container">
+    <div className="forum-card">
             <div className='post'>
                 <h2 className='post-title'>{post.title}</h2>
                 <p className='author'>Posted by: {post.author.username}</p>
@@ -44,7 +46,9 @@ const SinglePostPage = () => {
                 {showCommentForm && <CommentForm postId={postId} onCommentAdded={handleCommentAdded} />} {/* Render the comment form only if showCommentForm is true */}
                 <Comments postId={postId} />
             </div>
-        </div>
+    </div>
+    </div>
+    </div>
     );
 };
 

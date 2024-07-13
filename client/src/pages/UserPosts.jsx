@@ -52,17 +52,23 @@ const UserPostPage = () => {
 
 	const { loading, error, data } = useQuery(GET_USER_POSTS)
 
-	if (loading) {
-		return <p>Loading...</p>
-	}
-	if (error) {
-		return <p>Error...</p>
-	}
-
 	return (
 		<div className="forum-card-container">
 			<div className="forum-card">
-				{data.getMyPost.map((post) => (
+				{loading ? (
+					<div style={{ background: 'white', color: 'black', textAlign: 'center' }}>
+						<p>Loading</p>
+					</div>
+				) : error ? (
+					<p>
+						There was an error
+						<br />
+						<button onClick={() => window.reload()}>Refresh</button>
+					</p>
+				) : data.getMyPost.length === 0 ? (
+					<p style={{ background: 'white', color: 'black' }}>No blog posts</p>
+				) : (
+				data.getMyPost.map((post) => (
 					<div className="post" key={post._id}>
 						<h2 className="post-title">{post.title}</h2>
 						<p className="post-content">{post.content}</p>
@@ -94,6 +100,7 @@ const UserPostPage = () => {
 							)}
 						</div>
 					</div>
+				)
 				))}
 			</div>
 		</div>

@@ -30,9 +30,7 @@ const ProfilePage = () => {
 	const [currentlyPlaying, setCurrentlyPlaying] = useState([])
 	const [userId, setUserId] = useState(null)
 	// const [userData, setUserData] = useState(null);
-	console.log(QUERY_ME)
 	const { loading, data, refetch: refetchMe } = useQuery(QUERY_ME)
-	console.log(data)
 	const userData = data?.me || {}
 
 	// useEffect(() => {
@@ -82,7 +80,6 @@ const ProfilePage = () => {
 
 			// Find the game object using the gameId
 			const game = searchResults.find((game) => game.gameId === gameId)
-			console.log(game.name)
 			if (!game) {
 				throw new Error('Game not found')
 			}
@@ -117,7 +114,6 @@ const ProfilePage = () => {
 
 			// Find the game object using the gameId
 			const game = searchResults.find((game) => game.gameId === gameId)
-			console.log(game.gameId)
 			if (!game) {
 				throw new Error('Game not found')
 			}

@@ -23,7 +23,6 @@ const HomePage = () => {
 	const [searchGames, setSearchedGames] = useState('')
 	const [searchResults, setSearchResults] = useState([])
 	const { loading, data, refetch: refetchMe } = useQuery(QUERY_ME)
-	// console.log(data)
 	const userData = data?.me || {}
 
 	const { loading: gamesLoading, error: gamesError } = useQuery(GET_ALL_GAMES, {
@@ -172,7 +171,7 @@ const HomePage = () => {
 					)}
 				</div>
 			</div>
-			<div className="input-group mb-3 search-group">
+			<div className="search-group">
 				<input
 					className="search-bar"
 					type="text"
@@ -201,12 +200,7 @@ const HomePage = () => {
 							<div className="col-lg-5 col-md-6 col-sm-12" key={game.name}>
 								<div className="item">
 									<div className="image-container">
-										<img
-											className="game-image"
-											src={game.image}
-											alt={game.name}
-											style={{ width: '100%', height: 'auto' }}
-										/>
+										<img className="game-image" src={game.image} alt={game.name} />
 										<div className="overlay">
 											<h3 className="game-name">{game.name}</h3>
 											<p className="platforms">{getPlatformIcons(game.platforms)}</p>

@@ -42,8 +42,7 @@ const CreatePostPage = ({ refetchPosts }) => {
 	}
 
 	return (
-		<div>
-			<Navbar />
+		<>
 			<div
 				style={{
 					display: 'flex',
@@ -99,7 +98,7 @@ const CreatePostPage = ({ refetchPosts }) => {
 					</form>
 				</div>
 			</div>
-		</div>
+		</>
 	)
 }
 
