@@ -4,7 +4,6 @@ const { ApolloServer } = require('@apollo/server')
 const { expressMiddleware } = require('@apollo/server/express4')
 const { authMiddleware } = require('./utils/auth')
 const { typeDefs, resolvers } = require('./schemas')
-const fetchNews = require('./services/news')
 const db = require('./config/connection')
 const cors = require('cors')
 const app = express()
@@ -27,16 +26,6 @@ const startApolloServer = async () => {
 			context: authMiddleware,
 		})
 	)
-
-	//News route defined
-	app.get('/api/news', async (req, res) => {
-		try {
-			const articles = await fetchNews()
-			res.json({ articles })
-		} catch (error) {
-			res.status(500).json({ message: 'Error fetching news' })
-		}
-	})
 
 	// if we're in production, serve client/dist as static assets
 	if (process.env.NODE_ENV === 'production') {
