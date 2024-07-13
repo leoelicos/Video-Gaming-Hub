@@ -8,13 +8,6 @@ const Navbar = () => {
 	const isLoggedIn = AuthService.loggedIn()
 	const [showNotification, setShowNotification] = useState(false) // Track notification state
 
-	// Function to handle logout
-	const handleLogout = () => {
-		console.log('logout was clicked')
-		AuthService.logout() // Update authentication state
-	}
-
-	// Function to show notification
 	const showLoginNotification = () => {
 		setShowNotification(true)
 		setTimeout(() => {
