@@ -198,14 +198,17 @@ const HomePage = () => {
 						</p>
 					) : (
 						searchResults.map((game) => (
-							<div className="col-lg-5 col-md-6 col-sm-12" key={game.name}>
+							<div
+								className="game-container col-lg-4 col-md-6 col-sm-12"
+								key={game.name}
+							>
 								<div className="item">
 									<div className="image-container">
 										<img
 											className="game-image"
 											src={game.image}
 											alt={game.name}
-											style={{ width: '100%', height: 'auto' }}
+											style={{ width: '100%', height: '180px' }}
 										/>
 										<div className="overlay">
 											<h3 className="game-name">{game.name}</h3>
