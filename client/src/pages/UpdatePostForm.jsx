@@ -1,28 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
+import Button from '@mui/material/Button'
 
-// simple update form for updateing a post by postId 
+// simple update form for updating a post by postId
 const UpdatePostForm = ({ post, updatePost }) => {
-  const [content, setContent] = useState(post.content);
+	const [content, setContent] = useState(post.content)
 
-  const handleContentChange = (event) => {
-    setContent(event.target.value);
-  };
+	const handleContentChange = (event) => {
+		setContent(event.target.value)
+	}
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    updatePost({ postId: post._id, content });
-  };
+	const handleSubmit = (event) => {
+		event.preventDefault()
+		updatePost({ postId: post._id, content })
+	}
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Content:
-        <textarea className='comment-text-area' value={content} onChange={handleContentChange} />
-      </label>
-      <br />
-      <button className='update-btn' type="submit">Update Post</button>
-    </form>
-  );
-};
+	return (
+		<div>
+			<div className="content-container">
+				<div className="forum-card-container">
+					<div className="forum-card">
+						<div className="post">
+							<h2>Edit Post</h2>
+							<form onSubmit={handleSubmit}>
+								<label>
+									Content:
+									<textarea
+										className="comment-text-area"
+										value={content}
+										onChange={handleContentChange}
+									/>
+								</label>
+								<br />
+								<Button
+									className="update-btn"
+									type="submit"
+									variant="contained"
+									color="primary"
+								>
+									Update Post
+								</Button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	)
+}
 
-export default UpdatePostForm;
+export default UpdatePostForm

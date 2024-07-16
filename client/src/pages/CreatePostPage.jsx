@@ -42,64 +42,68 @@ const CreatePostPage = ({ refetchPosts }) => {
 	}
 
 	return (
-		<div>
-			<Navbar />
-			<div
-				style={{
-					display: 'flex',
-					justifyContent: 'center',
-					alignItems: 'center',
-					height: '25vh',
-				}}
-			>
-				<Button
-					component={Link}
-					to="/blog"
-					variant="contained"
-					color="primary"
-					style={{ textDecoration: 'none', color: 'inherit' }}
+		<>
+			<div className="content-container">
+				<h1 className="threads-header">Create a Post</h1>
+				<div
+					style={{
+						display: 'flex',
+						justifyContent: 'center',
+						alignItems: 'center',
+						height: '25vh',
+					}}
 				>
-					Back to Forums
-				</Button>
-			</div>
-			<div className="forum-card-container">
-				<div className="post">
-					<h2>Create a New Post</h2>
-					<form onSubmit={handleAddPost}>
-						<label htmlFor="title">Title:</label>
-						<input
-							className="comment-text-area"
-							type="text"
-							id="title"
-							name="title"
-							value={newPost.title}
-							onChange={handleInputChange}
-							required
-						/>
-						<br />
-						<label htmlFor="content">Content:</label>
-						<textarea
-							className="comment-text-area"
-							id="content"
-							name="content"
-							value={newPost.content}
-							onChange={handleInputChange}
-							required
-						/>
-						<br />
+					<Button
+						component={Link}
+						to="/blog"
+						variant="contained"
+						color="primary"
+						style={{ textDecoration: 'none', color: 'inherit' }}
+					>
+						Back to Forums
+					</Button>
+				</div>
+				<div className="forum-card-container">
+					<div className="forum-card">
+						<div className="post">
+							<h2>Create a New Post</h2>
+							<form onSubmit={handleAddPost}>
+								<label htmlFor="title">Title:</label>
+								<input
+									className="comment-text-area"
+									type="text"
+									id="title"
+									name="title"
+									value={newPost.title}
+									onChange={handleInputChange}
+									required
+								/>
+								<br />
+								<label htmlFor="content">Content:</label>
+								<textarea
+									className="comment-text-area"
+									id="content"
+									name="content"
+									value={newPost.content}
+									onChange={handleInputChange}
+									required
+								/>
+								<br />
 
-						<Button
-							className="btn btn-primary"
-							type="submit"
-							variant="contained"
-							color="primary"
-						>
-							Add Post
-						</Button>
-					</form>
+								<Button
+									className="btn btn-primary"
+									type="submit"
+									variant="contained"
+									color="primary"
+								>
+									Add Post
+								</Button>
+							</form>
+						</div>
+					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	)
 }
 

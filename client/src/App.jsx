@@ -61,7 +61,6 @@ function App() {
 	}
 
 	const handleLogout = () => {
-		console.log('logout clicked')
 		AuthService.logout()
 	}
 
@@ -71,43 +70,43 @@ function App() {
 		<>
 			<ApolloProvider client={client}>
 				<div className="app-wrapper">
+					<header className="app-header">
+						<Navbar />
+						<div style={{ flex: '1' }}></div>
+						<div
+							style={{
+								flex: '1',
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'center',
+							}}
+						>
+							<div className="app-logo">
+								<FaGamepad />
+							</div>
+							<h1 className="app-title">VGH</h1>
+						</div>
+						<div
+							style={{
+								flex: '1',
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'flex-end',
+								paddingRight: '10px',
+							}}
+						>
+							{isLoggedIn ? (
+								<button className="logout-button" onClick={handleLogout}>
+									Logout
+								</button>
+							) : (
+								<button className="login-button" onClick={handleShowLogin}>
+									Login
+								</button>
+							)}
+						</div>
+					</header>
 					<div className="app-container">
-						<header className="app-header">
-							<Navbar />
-							<div style={{ flex: '1' }}></div>
-							<div
-								style={{
-									flex: '1',
-									display: 'flex',
-									alignItems: 'center',
-									justifyContent: 'center',
-								}}
-							>
-								<div className="app-logo">
-									<FaGamepad />
-								</div>
-								<h1 className="app-title">VGH</h1>
-							</div>
-							<div
-								style={{
-									flex: '1',
-									display: 'flex',
-									alignItems: 'center',
-									justifyContent: 'flex-end',
-									paddingRight: '10px',
-								}}
-							>
-								{isLoggedIn ? (
-									<button className="logout-button" onClick={handleLogout}>
-										Logout
-									</button>
-								) : (
-									<button className="login-button" onClick={handleShowLogin}>
-										Login
-									</button>
-								)}
-							</div>
-						</header>
 						<Outlet />
 						{showLogin && (
 							<>
