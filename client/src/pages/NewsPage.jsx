@@ -21,7 +21,6 @@ const NewsPage = () => {
 
 	return (
 		<div className="container">
-			<Navbar />
 			<h1 className="news-feed">News Feed</h1>
 			<ul className="news-list">
 				{articles.map((article, index) => (
