@@ -1,13 +1,18 @@
 import React, { useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
-import { GET_USER_POSTS } from '../utils/queries'
+import { GET_USER_POSTS, QUERY_ME } from '../utils/queries'
 import { DELETE_POST, UPDATE_POST } from '../utils/mutations'
 import { Link } from 'react-router-dom'
 import Button from '@mui/material/Button'
 import UpdatePostForm from './UpdatePostForm'
 
-// grabs post of specific users post by using the GET_USER_POSTS front and back end query
 const UserPostPage = () => {
+	const {
+		loading: userLoading,
+		error: userError,
+		data: userData,
+	} = useQuery(QUERY_ME)
+
 	const [deletePost] = useMutation(DELETE_POST, {
 		update(cache, { data: { deletePost } }) {
 			const { getMyPost } = cache.readQuery({ query: GET_USER_POSTS })
@@ -18,7 +23,7 @@ const UserPostPage = () => {
 			})
 		},
 	})
-	// logic for handling the updated cashe and single post query
+
 	const [updatePost] = useMutation(UPDATE_POST, {
 		update(cache, { data: { updatePost } }) {
 			const { getMyPost } = cache.readQuery({ query: GET_USER_POSTS })
@@ -35,7 +40,6 @@ const UserPostPage = () => {
 	const [isUpdateFormOpen, setIsUpdateFormOpen] = useState(false)
 	const [selectedPost, setSelectedPost] = useState(null)
 
-	// handles the delete for user posts
 	const handleDelete = async (postId) => {
 		try {
 			await deletePost({
@@ -53,27 +57,31 @@ const UserPostPage = () => {
 
 	const { loading, error, data } = useQuery(GET_USER_POSTS)
 
+	if (userLoading) return <p>Loading user data...</p>
+	if (userError) return <p>Error fetching user data: {userError.message}</p>
+
 	return (
 		<>
-			<div
-				style={{
-					display: 'flex',
-					justifyContent: 'center',
-					alignItems: 'center',
-					height: '25vh',
-				}}
-			>
-				<Button
-					component={Link}
-					to="/blog"
-					variant="contained"
-					color="primary"
-					style={{ textDecoration: 'none', color: 'inherit' }}
-				>
-					Back to Forums
-				</Button>
-			</div>
 			<div className="content-container">
+				<h1 className="threads-header">{userData.me.username}'s Threads</h1>
+				<div
+					style={{
+						display: 'flex',
+						justifyContent: 'center',
+						alignItems: 'center',
+						height: '25vh',
+					}}
+				>
+					<Button
+						component={Link}
+						to="/blog"
+						variant="contained"
+						color="primary"
+						style={{ textDecoration: 'none', color: 'inherit' }}
+					>
+						Back to Forums
+					</Button>
+				</div>
 				<div className="forum-card-container">
 					<div className="forum-card">
 						{loading ? (
