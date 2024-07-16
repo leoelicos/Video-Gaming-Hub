@@ -24,15 +24,12 @@ import currentlyPlayingIcon from '../assets/gamepad-solid.svg'
 
 // Profile page function
 const ProfilePage = () => {
-	const [searchGames, setSearchedGames] = useState('')
-	const [searchResults, setSearchResults] = useState([])
-	const [wishlist, setWishlist] = useState([])
-	const [currentlyPlaying, setCurrentlyPlaying] = useState([])
-	const [userId, setUserId] = useState(null)
-	// const [userData, setUserData] = useState(null);
-	console.log(QUERY_ME)
-	const { loading, data, refetch: refetchMe } = useQuery(QUERY_ME)
-	// console.log(data)
+	const [searchGames, setSearchedGames] = useState('') // State to hold the searched games
+	const [searchResults, setSearchResults] = useState([]) // State to hold the search results
+	const [wishlist, setWishlist] = useState([]) // State to hold the wishlist
+	const [currentlyPlaying, setCurrentlyPlaying] = useState([]) // State to hold the currently playing games
+	const [userId, setUserId] = useState(null) // State to hold the user ID
+	const { loading, data, refetch: refetchMe } = useQuery(QUERY_ME) // Query to get the user data
 	const userData = data?.me || {}
 
 	// Function to handle searching a game in API
@@ -87,7 +84,7 @@ const ProfilePage = () => {
 				image: game.image,
 				platforms: game.platforms,
 				rating: game.rating,
-				releaseDate: game.releaseDate,
+				releaseDate: game.released,
 			}
 
 			// Call the addToWishlist mutation with the correct variable name
