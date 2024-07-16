@@ -5,6 +5,7 @@ import { DELETE_POST, UPDATE_POST } from '../utils/mutations'
 import { Link } from 'react-router-dom'
 import Button from '@mui/material/Button'
 import UpdatePostForm from './UpdatePostForm'
+import '../App.css'
 
 const UserPostPage = () => {
 	const {
@@ -107,14 +108,18 @@ const UserPostPage = () => {
 									<p className="created-at">
 										Created At: {new Date(parseInt(post.createdAt)).toLocaleDateString()}
 									</p>
-									<div className="button-group">
+									<div className="update-comments">
 										<Button
+											variant="contained"
+											color="primary"
 											className="post-update-button"
 											onClick={() => handleUpdate(post)}
 										>
 											Update
 										</Button>
 										<Button
+											variant="contained"
+											color="secondary"
 											className="post-delete-button"
 											onClick={() => handleDelete(post._id)}
 										>
