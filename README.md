@@ -50,7 +50,7 @@ Join us at Video Game Hub and unlock a world of limitless possibilities. Shape, 
 
 ## Usage
 
-![VGH](https://github.com/dylanhoryza/video-game-hub/assets/78831747/73f1316d-8bda-4979-b499-aa4cfed6a0ef)
+![VGH](client/src/assets/readme-ss.png)
 
 - Open your browser and navigate to [http://localhost:3000](http://localhost:3000) to view the application.
 
