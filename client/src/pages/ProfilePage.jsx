@@ -32,14 +32,8 @@ const ProfilePage = () => {
 	// const [userData, setUserData] = useState(null);
 	console.log(QUERY_ME)
 	const { loading, data, refetch: refetchMe } = useQuery(QUERY_ME)
-	console.log(data)
+	// console.log(data)
 	const userData = data?.me || {}
-
-	// useEffect(() => {
-	//   if (data && data.me) {
-	//     setUserData(data.me);
-	//   }
-	// }, [data]);
 
 	// Function to handle searching a game in API
 	const [
