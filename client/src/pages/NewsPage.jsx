@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import './NewsPage.css'
 import Navbar from './Navbar'
 import NewsItem from './NewsItem'
@@ -19,11 +19,28 @@ const NewsPage = () => {
 		window.open(url, '_blank')
 	}
 
+	const isValidArticle = (article) => {
+		return (
+			article.source !== 'Unknown Source' &&
+			article.author !== 'Unknown Author' &&
+			article.title !== 'No Title' &&
+			article.description !== 'No Description' &&
+			article.url &&
+			article.urlToImage &&
+			article.publishedAt !== '' &&
+			article.content !== 'No Content'
+		)
+	}
+
+	if (newsLoading) return <div>Loading...</div>
+	if (newsError) return <div>Error fetching news</div>
+
 	return (
 		<div className="container">
+			<Navbar />
 			<h1 className="news-feed">News Feed</h1>
 			<ul className="news-list">
-				{articles.map((article, index) => (
+				{articles.filter(isValidArticle).map((article, index) => (
 					<li
 						key={index}
 						className="article"

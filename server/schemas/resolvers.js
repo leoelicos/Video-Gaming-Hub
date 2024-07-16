@@ -92,19 +92,19 @@ const resolvers = {
 				if (response.status !== 200) throw 'Failed to get news'
 				const mapped = response.data.articles.map((result) => {
 					return {
-						source: result.source?.name || '',
-						author: result.author || '',
-						title: result.title || '',
-						description: result.description || '',
+						source: result.source?.name || 'Unknown Source',
+						author: result.author || 'Unknown Author',
+						title: result.title || 'No Title',
+						description: result.description || 'No Description',
 						url: result.url || '',
 						urlToImage: result.urlToImage || '',
 						publishedAt: result.publishedAt || '',
-						content: result.content || '',
+						content: result.content || 'No Content',
 					}
 				})
 				return mapped
 			} catch (error) {
-				throw new Error('Failed to get games')
+				throw new Error('Failed to get news')
 			}
 		},
 	},
