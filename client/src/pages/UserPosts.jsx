@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 import { GET_USER_POSTS } from '../utils/queries'
 import { DELETE_POST, UPDATE_POST } from '../utils/mutations'
+import { Link } from 'react-router-dom'
 import Button from '@mui/material/Button'
 import UpdatePostForm from './UpdatePostForm'
 
@@ -52,51 +53,78 @@ const UserPostPage = () => {
 
 	const { loading, error, data } = useQuery(GET_USER_POSTS)
 
-	if (loading) {
-		return <p>Loading...</p>
-	}
-	if (error) {
-		return <p>Error...</p>
-	}
-
 	return (
-		<div className="forum-card-container">
-			<div className="forum-card">
-				{data.getMyPost.map((post) => (
-					<div className="post" key={post._id}>
-						<h2 className="post-title">{post.title}</h2>
-						<p className="post-content">{post.content}</p>
-						<p className="author">Author: {post.author.username}</p>
-						<p className="created-at">
-							Created At: {new Date(parseInt(post.createdAt)).toLocaleDateString()}
-						</p>
-						<div className="button-group">
-							<Button
-								className="post-update-button"
-								onClick={() => handleUpdate(post)}
-							>
-								Update
-							</Button>
-							<Button
-								className="post-delete-button"
-								onClick={() => handleDelete(post._id)}
-							>
-								Delete
-							</Button>
-							{isUpdateFormOpen && selectedPost && selectedPost._id === post._id && (
-								<UpdatePostForm
-									post={selectedPost}
-									updatePost={(updatedPost) => {
-										updatePost({ variables: updatedPost })
-										setIsUpdateFormOpen(false)
-									}}
-								/>
-							)}
-						</div>
-					</div>
-				))}
+		<>
+			<div
+				style={{
+					display: 'flex',
+					justifyContent: 'center',
+					alignItems: 'center',
+					height: '25vh',
+				}}
+			>
+				<Button
+					component={Link}
+					to="/blog"
+					variant="contained"
+					color="primary"
+					style={{ textDecoration: 'none', color: 'inherit' }}
+				>
+					Back to Forums
+				</Button>
 			</div>
-		</div>
+			<div className="forum-card-container">
+				<div className="forum-card">
+					{loading ? (
+						<div style={{ background: 'white', color: 'black', textAlign: 'center' }}>
+							<p>Loading</p>
+						</div>
+					) : error ? (
+						<p>
+							There was an error
+							<br />
+							<button onClick={() => window.reload()}>Refresh</button>
+						</p>
+					) : data.getMyPost.length === 0 ? (
+						<p style={{ background: 'white', color: 'black' }}>No blog posts</p>
+					) : (
+						data.getMyPost.map((post) => (
+							<div className="post" key={post._id}>
+								<h2 className="post-title">{post.title}</h2>
+								<p className="post-content">{post.content}</p>
+								<p className="author">Author: {post.author.username}</p>
+								<p className="created-at">
+									Created At: {new Date(parseInt(post.createdAt)).toLocaleDateString()}
+								</p>
+								<div className="button-group">
+									<Button
+										className="post-update-button"
+										onClick={() => handleUpdate(post)}
+									>
+										Update
+									</Button>
+									<Button
+										className="post-delete-button"
+										onClick={() => handleDelete(post._id)}
+									>
+										Delete
+									</Button>
+									{isUpdateFormOpen && selectedPost && selectedPost._id === post._id && (
+										<UpdatePostForm
+											post={selectedPost}
+											updatePost={(updatedPost) => {
+												updatePost({ variables: updatedPost })
+												setIsUpdateFormOpen(false)
+											}}
+										/>
+									)}
+								</div>
+							</div>
+						))
+					)}
+				</div>
+			</div>
+		</>
 	)
 }
 

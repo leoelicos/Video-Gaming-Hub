@@ -17,24 +17,6 @@ const UpdatePostForm = ({ post, updatePost }) => {
 
 	return (
 		<div>
-			<div
-				style={{
-					display: 'flex',
-					justifyContent: 'center',
-					alignItems: 'center',
-					height: '25vh',
-				}}
-			>
-				<Button
-					component={Link}
-					to="/blog"
-					variant="contained"
-					color="primary"
-					style={{ textDecoration: 'none', color: 'inherit' }}
-				>
-					Back to Forums
-				</Button>
-			</div>
 			<div className="content-container">
 				<div className="forum-card-container">
 					<div className="forum-card">
