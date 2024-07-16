@@ -160,7 +160,7 @@ const ProfilePage = () => {
 	if (!userData.username)
 		return (
 			<div style={{ background: 'white', color: 'black', textAlign: 'center' }}>
-				<p>Please login</p>
+				<h1>Please login</h1>
 			</div>
 		)
 
