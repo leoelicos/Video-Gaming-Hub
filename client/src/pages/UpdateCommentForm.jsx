@@ -31,7 +31,11 @@ const UpdateCommentForm = ({ comment, onSave, onCancel }) => {
 		<div className="update-comment-form">
 			<form onSubmit={handleSubmit}>
 				<label>
-					<textarea value={content} onChange={handleContentChange} />
+					<textarea
+						className="comment-text-area"
+						value={content}
+						onChange={handleContentChange}
+					/>
 				</label>
 				<div className="update-comments">
 					<Button type="submit" variant="contained" color="primary">
