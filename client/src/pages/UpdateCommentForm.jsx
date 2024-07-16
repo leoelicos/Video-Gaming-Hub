@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { UPDATE_COMMENT } from '../utils/mutations'
 import Button from '@mui/material/Button'
+import '../App.css'
 
-// update comment form that can be re used through the app
-const UpdateCommentForm = ({ comment, onSave }) => {
+const UpdateCommentForm = ({ comment, onSave, onCancel }) => {
 	const [content, setContent] = useState(comment.content)
 	const [updateComment] = useMutation(UPDATE_COMMENT)
 
@@ -17,7 +17,7 @@ const UpdateCommentForm = ({ comment, onSave }) => {
 					content,
 				},
 			})
-			onSave(comment.id, content) // Call the onSave function to close the form
+			onSave(comment.id, content) // Call the onSave function to handle updates
 		} catch (error) {
 			console.error('Error updating comment:', error)
 		}
@@ -27,17 +27,22 @@ const UpdateCommentForm = ({ comment, onSave }) => {
 		setContent(e.target.value)
 	}
 
-	// returns value of new content and submits update
 	return (
-		<form onSubmit={handleSubmit}>
-			<label>
-				Comment:
-				<textarea value={content} onChange={handleContentChange} />
-			</label>
-			<Button type="submit" variant="contained" color="primary">
-				Update Comment
-			</Button>
-		</form>
+		<div className="update-comment-form">
+			<form onSubmit={handleSubmit}>
+				<label>
+					<textarea value={content} onChange={handleContentChange} />
+				</label>
+				<div className="update-comments">
+					<Button type="submit" variant="contained" color="primary">
+						Update Comment
+					</Button>
+					<Button onClick={onCancel} variant="contained" color="secondary">
+						Cancel
+					</Button>
+				</div>
+			</form>
+		</div>
 	)
 }
 

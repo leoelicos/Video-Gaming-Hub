@@ -95,6 +95,21 @@ h3 {
 	background-color: rgb(142, 131, 158);
 }
 
+.update-comments {
+	display: flex;
+	justify-content: center;
+	gap: 3rem;
+	margin: 1rem 0 1rem 0;
+}
+
+.form-field {
+	margin-bottom: 2rem;
+}
+
+.comments-title {
+	margin-bottom: 1rem;
+}
+
 @media (max-width: 768px) {
 	.post {
 		width: 500px;
