@@ -33,25 +33,27 @@ const SinglePostPage = () => {
 
 	return (
 		<>
-			<div
-				style={{
-					display: 'flex',
-					justifyContent: 'center',
-					alignItems: 'center',
-					height: '25vh',
-				}}
-			>
-				<Button
-					component={Link}
-					to="/blog"
-					variant="contained"
-					color="primary"
-					style={{ textDecoration: 'none', color: 'inherit' }}
-				>
-					Back to Forums
-				</Button>
-			</div>
 			<div className="content-container">
+				<h1 className="threads-header">Posted by: {post.author.username}</h1>
+				<div
+					style={{
+						display: 'flex',
+						justifyContent: 'center',
+						alignItems: 'center',
+						height: '25vh',
+					}}
+				>
+					<Button
+						component={Link}
+						to="/blog"
+						variant="contained"
+						color="primary"
+						style={{ textDecoration: 'none', color: 'inherit' }}
+					>
+						Back to Forums
+					</Button>
+				</div>
+
 				<div className="forum-card-container">
 					<div className="forum-card">
 						<div className="post">
