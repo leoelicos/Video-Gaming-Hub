@@ -7,7 +7,11 @@ import { useQuery } from '@apollo/client'
 
 const NewsPage = () => {
 	const [articles, setArticles] = useState([])
-	const { loading: newsLoading, error: newsError } = useQuery(GET_ALL_NEWS, {
+	const {
+		loading: newsLoading,
+		error: newsError,
+		refetch,
+	} = useQuery(GET_ALL_NEWS, {
 		variables: { search: '' },
 		fetchPolicy: 'cache-first',
 		onCompleted: (data) => {
@@ -32,32 +36,42 @@ const NewsPage = () => {
 		)
 	}
 
+	const handleTryAgain = () => refetch()
+
 	if (newsLoading) return <div>Loading...</div>
 	if (newsError) return <div>Error fetching news</div>
 
+	const filtered = articles.filter(isValidArticle)
 	return (
 		<div className="container">
 			<Navbar />
 			<h1 className="news-feed">News Feed</h1>
 			<ul className="news-list">
-				{articles.filter(isValidArticle).map((article, index) => (
-					<li
-						key={index}
-						className="article"
-						onClick={() => openArticle(article.url)}
-					>
-						<NewsItem
-							source={article.source}
-							author={article.author}
-							title={article.title}
-							description={article.description}
-							url={article.url}
-							urlToImage={article.urlToImage}
-							publishedAt={article.publishedAt}
-							content={article.content}
-						/>
-					</li>
-				))}
+				{filtered.length === 0 ? (
+					<div style={{ background: 'white', color: 'black', textAlign: 'center' }}>
+						<p>No articles, please try again</p>
+						<button onClick={handleTryAgain}>Get articles</button>
+					</div>
+				) : (
+					filtered.map((article, index) => (
+						<li
+							key={index}
+							className="article"
+							onClick={() => openArticle(article.url)}
+						>
+							<NewsItem
+								source={article.source}
+								author={article.author}
+								title={article.title}
+								description={article.description}
+								url={article.url}
+								urlToImage={article.urlToImage}
+								publishedAt={article.publishedAt}
+								content={article.content}
+							/>
+						</li>
+					))
+				)}
 			</ul>
 		</div>
 	)
